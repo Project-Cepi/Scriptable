@@ -1,9 +1,15 @@
 package world.cepi.luae.script
 
-import world.cepi.luae.script.ScriptContext
-
+/**
+ * Something that can run content. This content varies depending on the type.
+ */
 interface Script {
 
-    fun run(context: ScriptContext, content: String)
+    /**
+     * Runs a set of objects with some context.
+     *
+     * @return If this succeeded or not.
+     */
+    fun run(context: ScriptContext, content: Any): RunResult
 
 }
