@@ -58,7 +58,7 @@ dependencies {
     implementation("org.graalvm.tools:profiler:1.0.0-rc12")
     implementation("org.graalvm.tools:chromeinspector:1.0.0-rc12")
 
-    implementation("org.graalvm.compiler:compiler:1.0.0-rc12")
+    implementation("org.graalvm.compiler:compiler:1.0.0-rc16")
     implementation("org.graalvm.truffle:truffle-api:1.0.0-rc12")
 }
 tasks.withType<Test> {
