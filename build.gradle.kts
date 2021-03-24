@@ -54,12 +54,7 @@ dependencies {
     implementation("org.luaj:luaj-jse:3.0.1")
 
     // graalvm
-    implementation("org.graalvm.sdk:graal-sdk:1.0.0-rc16")
-    implementation("org.graalvm.tools:profiler:1.0.0-rc12")
-    implementation("org.graalvm.tools:chromeinspector:1.0.0-rc12")
-
-    implementation("org.graalvm.compiler:compiler:1.0.0-rc16")
-    implementation("org.graalvm.truffle:truffle-api:1.0.0-rc12")
+    implementation("org.graalvm.sdk:graal-sdk:20.2.0")
 }
 tasks.withType<Test> {
     useJUnitPlatform()
