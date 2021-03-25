@@ -55,7 +55,7 @@ dependencies {
 
     // graalvm
     implementation("org.graalvm.sdk:graal-sdk:20.2.0")
-    implementation("org.graalvm.js:js:20.2.0")
+    implementation("org.graalvm.js:js:20.3.1.2")
 }
 tasks.withType<Test> {
     useJUnitPlatform()
