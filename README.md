@@ -3,6 +3,15 @@ Sandbox engine for Cepi.
 
 Luae is an indirect Quranic name for boys that means “flat area of sand”.
 
+## How it works
+
+There are 2 main components:
+
+Session (Editor)
+Runtime (Scripts)
+
+A session
+
 ## Installation
 
 Download the jar from [Releases](https://github.com/Project-Cepi/LuaeEngine/releases)

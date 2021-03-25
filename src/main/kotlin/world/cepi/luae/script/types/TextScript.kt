@@ -4,11 +4,11 @@ import world.cepi.luae.script.RunResult
 import world.cepi.luae.script.Script
 import world.cepi.luae.script.ScriptContext
 
-interface TextScript : Script {
+abstract class TextScript(content: String) : Script(content) {
 
-    fun runText(scriptContext: ScriptContext, content: String): RunResult
+    abstract fun runText(scriptContext: ScriptContext, content: String): RunResult
 
-    override fun run(scriptContext: ScriptContext, content: Any): RunResult {
+    override fun run(scriptContext: ScriptContext): RunResult {
         if (content !is String)
             return RunResult.INVALID_CONTENT
 
