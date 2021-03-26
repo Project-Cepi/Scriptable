@@ -11,7 +11,7 @@ data class ScriptContext(
     /** Who executed it */
     val player: Player?,
     /** What instance it was executed in */
-    val instance: Instance,
+    val instance: Instance?,
     /** Where it was executed */
-    val position: Position
+    val position: Position?
 )

@@ -42,20 +42,20 @@ dependencies {
     compileOnly(kotlin("reflect"))
 
     // Compile Minestom into project
-    compileOnly("com.github.Minestom:Minestom:-SNAPSHOT")
-
-    // OkHttp
-    compileOnly("com.squareup.okhttp3", "okhttp", "4.9.0")
+    compileOnly("com.github.Project-Cepi:Minestom:13b1d1e7a5")
 
     // import kotlinx serialization
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 
-    // add lua-java
-    implementation("org.luaj:luaj-jse:3.0.1")
+    // Get KStom
+    compileOnly("com.github.Project-Cepi:KStom:cbcf67f09c")
+
+    // Add Kepi
+    compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
     // graalvm
     implementation("org.graalvm.sdk:graal-sdk:20.2.0")
-    implementation("org.graalvm.js:js:20.2.0")
+    implementation("org.graalvm.python:python:20.2.0")
 }
 
 tasks.withType<Test> {
