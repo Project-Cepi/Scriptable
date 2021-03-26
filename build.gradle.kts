@@ -54,7 +54,7 @@ dependencies {
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
     // graalvm
-    implementation("org.graalvm.sdk:graal-sdk:20.2.0")
+    implementation("org.graalvm.sdk:graal-sdk:21.0.0.2")
     implementation("org.graalvm.python:python:20.2.0")
 }
 
