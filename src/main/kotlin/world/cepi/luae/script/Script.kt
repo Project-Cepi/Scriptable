@@ -10,7 +10,7 @@ import org.luaj.vm2.lib.jse.JsePlatform
 /**
  * Something that can run code w/ context.
  */
-class Script(val content: String = "") {
+inline class Script(val content: String = "") {
 
     companion object {
         const val key = "luae-script"

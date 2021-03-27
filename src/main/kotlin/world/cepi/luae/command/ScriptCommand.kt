@@ -15,6 +15,7 @@ object ScriptCommand : Command("script") {
     init {
         val create = "create".asSubcommand()
         val run = "run".asSubcommand()
+        val editor = "editor".asSubcommand()
 
         addSyntax(create) { sender ->
             val player = sender as Player
@@ -33,6 +34,13 @@ object ScriptCommand : Command("script") {
                 player.position
             ))
         }
+
+        addSubcommand(object : Command("editor") {
+            init {
+                addSubcommand(BookScriptEditor)
+                addSubcommand(LineScriptEditor)
+            }
+        })
 
     }
 
