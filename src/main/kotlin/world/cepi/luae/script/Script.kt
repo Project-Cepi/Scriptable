@@ -5,15 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.minestom.server.data.DataImpl
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
-import org.graalvm.polyglot.Context
-import org.luaj.vm2.LuaValue
-
 import org.luaj.vm2.lib.jse.JsePlatform
-
-import org.luaj.vm2.Globals
-
-
-
 
 /**
  * Something that can run code w/ context.
