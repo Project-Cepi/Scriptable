@@ -15,7 +15,6 @@ object ScriptCommand : Command("script") {
     init {
         val create = "create".asSubcommand()
         val run = "run".asSubcommand()
-        val editor = "editor".asSubcommand()
 
         addSyntax(create) { sender ->
             val player = sender as Player
