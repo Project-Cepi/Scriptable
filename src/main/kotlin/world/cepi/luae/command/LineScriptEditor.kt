@@ -38,7 +38,10 @@ object LineScriptEditor : Command("line") {
 
             val script = player.itemInMainHand.data?.get<Script>(Script.key) ?: return@addSyntax
 
-            val newScript = Script(script.content + "\n${args.get(content)}")
+            val newScript = if (script.content.isEmpty())
+                Script(args.get(content))
+            else
+                Script(script.content + "\n${args.get(content)}")
 
             player.itemInMainHand = newScript.asItem()
         }
