@@ -30,7 +30,7 @@ class Script(val content: String = "") {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val printStream = PrintStream(byteArrayOutputStream, true, "utf-8")
 
-        val globals = JsePlatform.standardGlobals()
+        val globals = GlobalGenerator.from(scriptContext)
 
         globals.STDOUT = printStream
 
