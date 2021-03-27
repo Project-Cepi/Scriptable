@@ -6,6 +6,14 @@ import net.minestom.server.data.DataImpl
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import org.graalvm.polyglot.Context
+import org.luaj.vm2.LuaValue
+
+import org.luaj.vm2.lib.jse.JsePlatform
+
+import org.luaj.vm2.Globals
+
+
+
 
 /**
  * Something that can run code w/ context.
@@ -22,9 +30,9 @@ class Script(val content: String = "") {
      * @return If this succeeded or not.
      */
     fun run(scriptContext: ScriptContext): RunResult {
-        Context.create().use {
-                context -> context.eval("python", content)
-        }
+        val globals = JsePlatform.standardGlobals()
+        val chunk = globals.load(content)
+        chunk.call()
 
         return RunResult.SUCCESS
     }
