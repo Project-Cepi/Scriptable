@@ -1,5 +1,5 @@
-# LuaeEngine
-Sandbox engine for Cepi.
+# LuaecEditor
+Editor for Cepi based on Luae.
 
 Luae is an indirect Quranic name for boys that means “flat area of sand”.
 
