@@ -6,6 +6,11 @@ import net.minestom.server.data.DataImpl
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import org.luaj.vm2.lib.jse.JsePlatform
+import world.cepi.kstom.item.clientData
+import world.cepi.kstom.item.get
+import world.cepi.kstom.item.item
+import world.cepi.kstom.item.withMeta
+import world.cepi.luae.script.Script.Companion.key
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
@@ -44,19 +49,18 @@ class Script(val content: String = "") {
         return RunResult.SUCCESS
     }
 
-    fun asItem(): ItemStack {
+    fun asItem(): ItemStack = item(Material.PAPER) {
+        displayName(Component.text("Script", NamedTextColor.GREEN))
 
-        val scriptItem = ItemStack(Material.PAPER, 1)
-
-        scriptItem.displayName = Component.text("Script", NamedTextColor.GREEN)
-
-        val data = DataImpl()
-
-        data.set(key, this)
-
-        scriptItem.data = data
-
-        return scriptItem
+        withMeta {
+            clientData {
+                this[key] = this@Script
+            }
+        }
     }
 
+
 }
+
+val ItemStack.luaeScript: Script?
+    get() = this.meta.get(key)

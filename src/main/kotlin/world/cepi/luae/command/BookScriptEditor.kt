@@ -6,6 +6,7 @@ import net.minestom.server.command.builder.Command
 import net.minestom.server.entity.Player
 import world.cepi.kstom.command.addSyntax
 import world.cepi.luae.script.Script
+import world.cepi.luae.script.luaeScript
 
 object BookScriptEditor : Command("book") {
 
@@ -13,7 +14,7 @@ object BookScriptEditor : Command("book") {
         addSyntax { sender ->
             val player = sender as Player
 
-            val script = player.itemInMainHand.data?.get<Script>(Script.key) ?: return@addSyntax
+            val script = player.itemInMainHand.luaeScript ?: return@addSyntax
 
             val book = Book.book(
                 Component.text("Script Editor"),

@@ -2,10 +2,11 @@ package world.cepi.luae.command
 
 import net.minestom.server.command.builder.Command
 import net.minestom.server.entity.Player
-import world.cepi.kstom.command.arguments.asSubcommand
 import world.cepi.kstom.command.addSyntax
+import world.cepi.kstom.command.arguments.literal
 import world.cepi.luae.script.Script
 import world.cepi.luae.script.ScriptContext
+import world.cepi.luae.script.luaeScript
 
 /**
  * Create and manage item scripts.
@@ -13,8 +14,8 @@ import world.cepi.luae.script.ScriptContext
 object ScriptCommand : Command("script") {
 
     init {
-        val create = "create".asSubcommand()
-        val run = "run".asSubcommand()
+        val create = "create".literal()
+        val run = "run".literal()
 
         addSyntax(create) { sender ->
             val player = sender as Player
@@ -25,7 +26,7 @@ object ScriptCommand : Command("script") {
         addSyntax(run) { sender ->
             val player = sender as Player
 
-            val script = player.itemInMainHand.data?.get<Script>(Script.key) ?: return@addSyntax
+            val script = player.itemInMainHand.luaeScript ?: return@addSyntax
 
             script.run(ScriptContext(
                 player,

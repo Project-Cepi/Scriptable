@@ -6,8 +6,9 @@ import net.minestom.server.command.builder.Command
 import net.minestom.server.command.builder.arguments.ArgumentType
 import net.minestom.server.entity.Player
 import world.cepi.kstom.command.addSyntax
-import world.cepi.kstom.command.arguments.asSubcommand
+import world.cepi.kstom.command.arguments.literal
 import world.cepi.luae.script.Script
+import world.cepi.luae.script.luaeScript
 
 /**
  * Subcommand for Script, allows editing of lines.
@@ -15,10 +16,10 @@ import world.cepi.luae.script.Script
 object LineScriptEditor : Command("line") {
 
     init {
-        val add = "add".asSubcommand() // Adds a new line with content
-        val remove = "remove".asSubcommand() // Removes line at X index
-        val insert = "insert".asSubcommand() // Inserts line after X index
-        val list = "list".asSubcommand()
+        val add = "add".literal() // Adds a new line with content
+        val remove = "remove".literal() // Removes line at X index
+        val insert = "insert".literal() // Inserts line after X index
+        val list = "list".literal()
 
         val content = ArgumentType.String("content")
         val index = ArgumentType.Integer("index")
@@ -26,7 +27,7 @@ object LineScriptEditor : Command("line") {
         addSyntax(list) { sender ->
             val player = sender as Player
 
-            val script = player.itemInMainHand.data?.get<Script>(Script.key) ?: return@addSyntax
+            val script = player.itemInMainHand.luaeScript ?: return@addSyntax
 
             script.content.split("\n").forEach {
                 player.sendMessage(Component.text(it, NamedTextColor.GRAY))
@@ -36,7 +37,7 @@ object LineScriptEditor : Command("line") {
         addSyntax(add, content) { sender, args ->
             val player = sender as Player
 
-            val script = player.itemInMainHand.data?.get<Script>(Script.key) ?: return@addSyntax
+            val script = player.itemInMainHand.luaeScript ?: return@addSyntax
 
             val newScript = if (script.content.isEmpty())
                 Script(args.get(content))
@@ -49,7 +50,7 @@ object LineScriptEditor : Command("line") {
         addSyntax(remove, index) { sender, args ->
             val player = sender as Player
 
-            val script = player.itemInMainHand.data?.get<Script>(Script.key) ?: return@addSyntax
+            val script = player.itemInMainHand.luaeScript ?: return@addSyntax
 
             val newScript = Script(script.content.split("\n").toMutableList().also {
                 it.removeAt(args.get(index))
@@ -61,7 +62,7 @@ object LineScriptEditor : Command("line") {
         addSyntax(insert, index) { sender, args ->
             val player = sender as Player
 
-            val script = player.itemInMainHand.data?.get<Script>(Script.key) ?: return@addSyntax
+            val script = player.itemInMainHand.luaeScript ?: return@addSyntax
 
             val newScript = Script(script.content.split("\n").toMutableList().also {
                 it.removeAt(args.get(index))
