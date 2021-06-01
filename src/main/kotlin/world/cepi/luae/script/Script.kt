@@ -1,24 +1,26 @@
 package world.cepi.luae.script
 
+import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.minestom.server.data.DataImpl
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
-import org.luaj.vm2.lib.jse.JsePlatform
+import net.minestom.server.tag.Tag
+import org.graalvm.polyglot.Context
+import org.graalvm.polyglot.management.ExecutionEvent
 import world.cepi.kstom.item.clientData
 import world.cepi.kstom.item.get
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
 import world.cepi.luae.script.Script.Companion.key
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
-import java.nio.charset.StandardCharsets
+import org.graalvm.polyglot.management.ExecutionListener
+import world.cepi.kstom.Manager
 
 
 /**
  * Something that can run code w/ context.
  */
+@Serializable
 class Script(val content: String = "") {
 
     companion object {
@@ -32,19 +34,23 @@ class Script(val content: String = "") {
      */
     fun run(scriptContext: ScriptContext): RunResult {
 
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        val printStream = PrintStream(byteArrayOutputStream, true, "utf-8")
+        Context
+            .newBuilder("js")
+            .option("sandbox.MaxCPUTime", "500ms")
+            .option("sandbox.MaxCPUTimeCheckInterval", "5ms")
+            .build()
+            .use { context ->
 
-        val globals = GlobalGenerator.from(scriptContext)
+            val listener = ExecutionListener.newBuilder()
+                .onEnter { e: ExecutionEvent ->
+                    println(e.location.characters)
+                }
+                .statements(true)
+                .attach(context.engine)
 
-        globals.STDOUT = printStream
-
-        val chunk = globals.load(content)
-        chunk.call()
-
-        val output = String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8)
-
-        scriptContext.player?.sendMessage(Component.text(output))
+            context.eval("js", content)
+            listener.close()
+        }
 
         return RunResult.SUCCESS
     }
@@ -53,14 +59,12 @@ class Script(val content: String = "") {
         displayName(Component.text("Script", NamedTextColor.GREEN))
 
         withMeta {
-            clientData {
-                this[key] = this@Script
-            }
+            this.setTag(Tag.String(key), content)
         }
     }
 
 
 }
 
-val ItemStack.luaeScript: Script?
-    get() = this.meta.get(key)
+val ItemStack.scriptString: String?
+    get() = this.meta.getTag(Tag.String(Script.key))

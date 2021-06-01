@@ -10,14 +10,14 @@ class LuaeExtension : Extension() {
 
         MinecraftServer.getCommandManager().register(ScriptCommand)
 
-        logger.info("[LuaeExtension] has been enabled!")
+        logger.info("[LuaeEngine] has been enabled!")
     }
 
     override fun terminate() {
 
         MinecraftServer.getCommandManager().unregister(ScriptCommand)
 
-        logger.info("[LuaeExtension] has been disabled!")
+        logger.info("[LuaeEngine] has been disabled!")
     }
 
 }

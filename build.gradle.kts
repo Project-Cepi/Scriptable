@@ -18,10 +18,9 @@ plugins {
 }
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    jcenter()
+    // Use mavenCentral for resolving dependencies.
+    mavenCentral()
 
-    // Use mavenCentral
     maven(url = "https://repo1.maven.org/maven2/")
     maven(url = "https://repo.spongepowered.org/maven")
     maven(url = "https://libraries.minecraft.net")
@@ -41,19 +40,21 @@ dependencies {
     compileOnly(kotlin("reflect"))
 
     // Compile Minestom into project
-    compileOnly("com.github.Project-Cepi:Minestom:cd0ea0c0c2")
+    compileOnly("com.github.Project-Cepi:Minestom:d871cb2c9c")
 
     // import kotlinx serialization
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     // Get KStom
-    compileOnly("com.github.Project-Cepi:KStom:570ab31fd2")
+    compileOnly("com.github.Project-Cepi:KStom:850bc149d8")
 
     // Add Kepi
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
-    // Add luaj
-    implementation("org.luaj:luaj-jse:3.0.1")
+    // Add js support
+    implementation("org.graalvm.sdk:graal-sdk:21.1.0")
+    implementation("org.graalvm.js:js:21.1.0")
+    implementation("org.graalvm.truffle:truffle-api:21.1.0")
 }
 
 tasks.withType<Test> {
