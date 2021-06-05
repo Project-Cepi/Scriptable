@@ -7,14 +7,11 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.tag.Tag
 import org.graalvm.polyglot.Context
+import org.graalvm.polyglot.Engine
 import org.graalvm.polyglot.management.ExecutionEvent
-import world.cepi.kstom.item.clientData
-import world.cepi.kstom.item.get
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
-import world.cepi.luae.script.Script.Companion.key
 import org.graalvm.polyglot.management.ExecutionListener
-import world.cepi.kstom.Manager
 
 
 /**
@@ -25,6 +22,7 @@ class Script(val content: String = "") {
 
     companion object {
         const val key = "luae-script"
+        const val currentLanguage = "js"
     }
 
     /**
@@ -32,28 +30,43 @@ class Script(val content: String = "") {
      *
      * @return If this succeeded or not.
      */
-    fun run(scriptContext: ScriptContext): RunResult {
+fun run(scriptContext: ScriptContext): RunResult {
 
+        val oldCl = Thread.currentThread().contextClassLoader
+        Thread.currentThread().contextClassLoader = javaClass.classLoader
         Context
-            .newBuilder("js")
-            .option("sandbox.MaxCPUTime", "500ms")
-            .option("sandbox.MaxCPUTimeCheckInterval", "5ms")
+            .newBuilder(currentLanguage)
             .build()
             .use { context ->
 
-            val listener = ExecutionListener.newBuilder()
-                .onEnter { e: ExecutionEvent ->
-                    println(e.location.characters)
-                }
-                .statements(true)
-                .attach(context.engine)
+                val listener = ExecutionListener.newBuilder()
+                    .onEnter { e: ExecutionEvent ->
+                        // TODO stop running after X amount of iterations.
+                    }
+                    .statements(true)
+                    .attach(context.engine)
 
-            context.eval("js", content)
-            listener.close()
+                context.getBindings(currentLanguage).apply {
+                    putMember("executor", Executor)
+                    putMember("player", scriptContext.player)
+                    putMember("position", scriptContext.position)
+                    putMember("instance", scriptContext.instance)
+                }
+
+                try {
+                    context.eval(currentLanguage, content)
+                } catch (e: Exception) {
+                    scriptContext.player?.sendMessage(
+                        Component.text(e.message ?: "An internal error occured while running this script", NamedTextColor.RED)
+                    )
+                }
+                listener.close()
         }
 
+        Thread.currentThread().contextClassLoader = oldCl
+
         return RunResult.SUCCESS
-    }
+}
 
     fun asItem(): ItemStack = item(Material.PAPER) {
         displayName(Component.text("Script", NamedTextColor.GREEN))
