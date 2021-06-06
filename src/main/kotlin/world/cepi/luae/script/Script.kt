@@ -3,11 +3,11 @@ package world.cepi.luae.script
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.tag.Tag
 import org.graalvm.polyglot.Context
-import org.graalvm.polyglot.Engine
 import org.graalvm.polyglot.management.ExecutionEvent
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
@@ -48,16 +48,14 @@ fun run(scriptContext: ScriptContext): RunResult {
 
                 context.getBindings(currentLanguage).apply {
                     putMember("executor", Executor)
-                    putMember("player", scriptContext.player)
-                    putMember("position", scriptContext.position)
-                    putMember("instance", scriptContext.instance)
+                    putMember("context", scriptContext)
                 }
 
                 try {
                     context.eval(currentLanguage, content)
                 } catch (e: Exception) {
-                    scriptContext.player?.sendMessage(
-                        Component.text(e.message ?: "An internal error occured while running this script", NamedTextColor.RED)
+                    scriptContext.player?.player?.sendMessage(
+                        Component.text(e.message ?: "An internal error occurred while running this script", NamedTextColor.RED)
                     )
                 }
                 listener.close()
@@ -69,7 +67,7 @@ fun run(scriptContext: ScriptContext): RunResult {
 }
 
     fun asItem(): ItemStack = item(Material.PAPER) {
-        displayName(Component.text("Script", NamedTextColor.GREEN))
+        displayName(Component.text("Script", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))
 
         withMeta {
             this.setTag(Tag.String(key), content)
