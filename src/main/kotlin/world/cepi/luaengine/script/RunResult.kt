@@ -1,4 +1,4 @@
-package world.cepi.luae.script
+package world.cepi.luaengine.script
 
 enum class RunResult {
 

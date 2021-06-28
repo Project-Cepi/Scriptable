@@ -21,11 +21,8 @@ repositories {
     // Use mavenCentral for resolving dependencies.
     mavenCentral()
 
-    maven(url = "https://repo1.maven.org/maven2/")
     maven(url = "https://repo.spongepowered.org/maven")
-    maven(url = "https://libraries.minecraft.net")
     maven(url = "https://jitpack.io")
-    maven(url = "https://jcenter.bintray.com/")
     maven(url = "https://repo.velocitypowered.com/snapshots/")
 }
 
@@ -40,19 +37,20 @@ dependencies {
     compileOnly(kotlin("reflect"))
 
     // Compile Minestom into project
-    compileOnly("com.github.Project-Cepi:Minestom:d871cb2c9c")
+    compileOnly("com.github.Minestom:Minestom:edaec0cb6d")
 
     // import kotlinx serialization
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     // Get KStom
-    compileOnly("com.github.Project-Cepi:KStom:850bc149d8")
+    compileOnly("com.github.Project-Cepi:KStom:41caee6491")
 
     // Add Kepi
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
-    // Add js support
-    implementation("org.graalvm.js:js:21.1.0")
+    // Add luae support
+    implementation("com.github.Project-Cepi.Luae:api:487b452721")
+    implementation("com.github.Project-Cepi.Luae:luaj:487b452721")
 }
 
 tasks.withType<Test> {

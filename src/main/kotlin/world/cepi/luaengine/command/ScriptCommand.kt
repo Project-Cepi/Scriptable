@@ -1,4 +1,4 @@
-package world.cepi.luae.command
+package world.cepi.luaengine.command
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -6,9 +6,9 @@ import net.minestom.server.command.builder.Command
 import net.minestom.server.entity.Player
 import world.cepi.kstom.command.addSyntax
 import world.cepi.kstom.command.arguments.literal
-import world.cepi.luae.script.Script
-import world.cepi.luae.script.ScriptContext
-import world.cepi.luae.script.scriptString
+import world.cepi.luaengine.script.Script
+import world.cepi.luaengine.script.ScriptContext
+import world.cepi.luaengine.script.scriptString
 
 /**
  * Create and manage item scripts.
@@ -20,7 +20,7 @@ object ScriptCommand : Command("script") {
         val run = "run".literal()
         val list = "list".literal()
 
-        addSyntax(list) { sender ->
+        addSyntax(list) {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
@@ -30,13 +30,13 @@ object ScriptCommand : Command("script") {
             }
         }
 
-        addSyntax(create) { sender ->
+        addSyntax(create) {
             val player = sender as Player
 
             player.inventory.addItemStack(Script().asItem())
         }
 
-        addSyntax(run) { sender ->
+        addSyntax(run) {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
