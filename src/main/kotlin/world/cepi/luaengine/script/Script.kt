@@ -9,6 +9,7 @@ import net.minestom.server.item.Material
 import net.minestom.server.tag.Tag
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
+import world.cepi.luae.*
 import java.io.FileInputStream
 
 
@@ -35,43 +36,35 @@ class Script(val content: String = "") {
 		 */
 
         // Make sure LuaJProvider is loaded so Luae is implemented.
-        /*
-		 * Testing driver for Luae
-		 */
-
-        // Make sure LuaJProvider is loaded so Luae is implemented.
         Class.forName("world.cepi.luae.luaj.LuaJProvider")
 
         val env: LuaeTable = Luae.newTable()
         Luae.installNeutralStandardLibrary(env) // Non-IO libraries basically
 
-
         // Print implementation
-
-        // Print implementation
-        env.set("print", object : LuaeExternalFunction() {
-            fun call(context: LuaeContext, args: LuaeVarargs) {
+        env.set("print", object : LuaeExternalFunction {
+            override fun call(context: LuaeContext, args: LuaeVarargs) {
                 for (arg in args) {
-                    println(arg)
+                    scriptContext.player.sendMessage("$arg")
                 }
                 context.returnFunction() // Don't forget this.
             }
         })
 
         val exe: LuaeExecution =
-            Luae.newExecution(FileInputStream("/home/pocveb/Development/Cepi/Luae/test.lua"), "test", env, null)
+            Luae.newExecution(content, "test", env, null)
 
         while (exe.tick());
 
-        if (exe.getState() === LuaeExecutionState.CRASHED) {
-            if (exe.getCrashReason().getErrorObject() is Throwable) {
-                (exe.getCrashReason().getErrorObject() as Throwable).printStackTrace()
+        if (exe.state === LuaeExecution.LuaeExecutionState.CRASHED) {
+            if (exe.crashReason.errorObject is Throwable) {
+                (exe.crashReason.errorObject as Throwable).printStackTrace()
             } else {
-                println("error: " + exe.getCrashReason().toString())
+                println("error: " + exe.crashReason.toString())
             }
         } else {
             println("end")
-            for (obj in exe.getReturnValue()) {
+            for (obj in exe.returnValue) {
                 println(obj)
             }
         }

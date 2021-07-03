@@ -49,8 +49,8 @@ dependencies {
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
     // Add luae support
-    implementation("com.github.Project-Cepi.Luae:api:487b452721")
-    implementation("com.github.Project-Cepi.Luae:luaj:487b452721")
+    implementation("com.github.Project-Cepi.Luae:api:41df5b8951")
+    implementation("com.github.Project-Cepi.Luae:luaj:41df5b8951")
 }
 
 tasks.withType<Test> {
