@@ -21,7 +21,6 @@ class Script(val content: String = "") {
 
     companion object {
         const val key = "luae-script"
-        const val currentLanguage = "js"
     }
 
     /**
@@ -39,7 +38,7 @@ class Script(val content: String = "") {
         Class.forName("world.cepi.luae.luaj.LuaJProvider")
 
         val env: LuaeTable = Luae.newTable()
-        Luae.installNeutralStandardLibrary(env) // Non-IO libraries basically
+        Luae.installNeutralStandardLibrary(env) // Install non-io libraries
 
         // Print implementation
         env.set("print", object : LuaeExternalFunction {
@@ -59,9 +58,9 @@ class Script(val content: String = "") {
         if (exe.state === LuaeExecution.LuaeExecutionState.CRASHED) {
             if (exe.crashReason.errorObject is Throwable) {
                 (exe.crashReason.errorObject as Throwable).printStackTrace()
-            } else {
-                println("error: " + exe.crashReason.toString())
             }
+
+            return RunResult.ERROR
         } else {
             println("end")
             for (obj in exe.returnValue) {
@@ -69,11 +68,12 @@ class Script(val content: String = "") {
             }
         }
 
-            return RunResult.SUCCESS
+        return RunResult.SUCCESS
     }
 
     fun asItem(): ItemStack = item(Material.PAPER) {
-        displayName(Component.text("Script", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))
+        displayName(Component.text("Script", NamedTextColor.GREEN)
+            .decoration(TextDecoration.ITALIC, false))
 
         withMeta {
             this.setTag(Tag.String(key), content)

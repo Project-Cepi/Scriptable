@@ -4,6 +4,7 @@ enum class RunResult {
 
     SUCCESS,
     INVALID_CONTENT,
-    NOT_ENOUGH_CONTEXT
+    NOT_ENOUGH_CONTEXT,
+    ERROR
 
 }
