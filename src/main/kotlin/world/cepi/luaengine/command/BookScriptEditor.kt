@@ -1,16 +1,16 @@
-package world.cepi.luae.command
+package world.cepi.luaengine.command
 
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.text.Component
 import net.minestom.server.command.builder.Command
 import net.minestom.server.entity.Player
 import world.cepi.kstom.command.addSyntax
-import world.cepi.luae.script.scriptString
+import world.cepi.luaengine.script.scriptString
 
 object BookScriptEditor : Command("book") {
 
     init {
-        addSyntax { sender ->
+        addSyntax {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax

@@ -1,8 +1,8 @@
-package world.cepi.luae
+package world.cepi.luaengine
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.extensions.Extension;
-import world.cepi.luae.command.ScriptCommand
+import world.cepi.luaengine.command.ScriptCommand
 
 class LuaeExtension : Extension() {
 

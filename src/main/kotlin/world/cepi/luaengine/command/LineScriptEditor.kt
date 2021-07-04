@@ -1,14 +1,12 @@
-package world.cepi.luae.command
+package world.cepi.luaengine.command
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.minestom.server.command.builder.Command
 import net.minestom.server.command.builder.arguments.ArgumentType
 import net.minestom.server.entity.Player
 import world.cepi.kstom.command.addSyntax
 import world.cepi.kstom.command.arguments.literal
-import world.cepi.luae.script.Script
-import world.cepi.luae.script.scriptString
+import world.cepi.luaengine.script.Script
+import world.cepi.luaengine.script.scriptString
 
 /**
  * Subcommand for Script, allows editing of lines.
@@ -22,26 +20,26 @@ object LineScriptEditor : Command("line") {
         val content = ArgumentType.StringArray("content").map { it.joinToString(" ") }
         val index = ArgumentType.Integer("index").min(0)
 
-        addSyntax(add, content) { sender, args ->
+        addSyntax(add, content) {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
 
             val newScript = if (script.isEmpty())
-                Script(args.get(content))
+                Script(context.get(content))
             else
-                Script(script + "\n${args.get(content)}")
+                Script(script + "\n${context.get(content)}")
 
             player.itemInMainHand = newScript.asItem()
         }
 
-        addSyntax(remove, index) { sender, args ->
+        addSyntax(remove, index) {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
 
             val newScript = Script(script.split("\n").toMutableList().also {
-                it.removeAt(args.get(index))
+                it.removeAt(context.get(index))
             }.joinToString("\n"))
 
             player.itemInMainHand = newScript.asItem()
