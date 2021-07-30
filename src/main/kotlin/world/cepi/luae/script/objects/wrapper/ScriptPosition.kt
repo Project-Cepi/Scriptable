@@ -1,4 +1,4 @@
-package world.cepi.luae.wrapper
+package world.cepi.luae.script.objects.wrapper
 
 import net.minestom.server.utils.Position
 import org.graalvm.polyglot.HostAccess

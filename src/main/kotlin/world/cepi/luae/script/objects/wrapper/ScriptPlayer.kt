@@ -1,15 +1,15 @@
-package world.cepi.luae.wrapper
+package world.cepi.luae.script.objects.wrapper
 
 import net.kyori.adventure.text.Component
 import net.minestom.server.entity.Player
 import org.graalvm.polyglot.HostAccess
-import world.cepi.kstom.adventure.asMini
 
 /**
  * Wrapper class for a player in a script object
  */
 class ScriptPlayer(val player: Player) : ScriptAudience {
 
+    @HostAccess.Export
     override fun sendMessage(component: Component) = player.sendMessage(component)
 
     @HostAccess.Export

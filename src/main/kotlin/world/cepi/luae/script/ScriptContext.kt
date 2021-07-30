@@ -4,7 +4,7 @@ import net.minestom.server.entity.Player
 import net.minestom.server.instance.Instance
 import net.minestom.server.utils.Position
 import org.graalvm.polyglot.HostAccess
-import world.cepi.luae.wrapper.ScriptPlayer
+import world.cepi.luae.script.objects.wrapper.ScriptPlayer
 
 /**
  * Represents data a player can possibly have

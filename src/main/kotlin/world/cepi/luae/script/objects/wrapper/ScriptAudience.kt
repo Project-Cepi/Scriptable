@@ -1,4 +1,4 @@
-package world.cepi.luae.wrapper
+package world.cepi.luae.script.objects.wrapper
 
 import net.kyori.adventure.text.Component
 import org.graalvm.polyglot.HostAccess

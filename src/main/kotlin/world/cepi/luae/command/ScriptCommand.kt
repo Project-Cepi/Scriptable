@@ -20,7 +20,7 @@ object ScriptCommand : Command("script") {
         val run = "run".literal()
         val list = "list".literal()
 
-        addSyntax(list) { sender ->
+        addSyntax(list) {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
@@ -30,13 +30,13 @@ object ScriptCommand : Command("script") {
             }
         }
 
-        addSyntax(create) { sender ->
+        addSyntax(create) {
             val player = sender as Player
 
             player.inventory.addItemStack(Script().asItem())
         }
 
-        addSyntax(run) { sender ->
+        addSyntax(run) {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax

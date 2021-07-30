@@ -22,26 +22,26 @@ object LineScriptEditor : Command("line") {
         val content = ArgumentType.StringArray("content").map { it.joinToString(" ") }
         val index = ArgumentType.Integer("index").min(0)
 
-        addSyntax(add, content) { sender, args ->
+        addSyntax(add, content) {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
 
             val newScript = if (script.isEmpty())
-                Script(args.get(content))
+                Script(context.get(content))
             else
-                Script(script + "\n${args.get(content)}")
+                Script(script + "\n${context.get(content)}")
 
             player.itemInMainHand = newScript.asItem()
         }
 
-        addSyntax(remove, index) { sender, args ->
+        addSyntax(remove, index) {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
 
             val newScript = Script(script.split("\n").toMutableList().also {
-                it.removeAt(args.get(index))
+                it.removeAt(context.get(index))
             }.joinToString("\n"))
 
             player.itemInMainHand = newScript.asItem()

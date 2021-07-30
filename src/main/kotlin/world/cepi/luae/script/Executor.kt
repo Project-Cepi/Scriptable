@@ -2,7 +2,7 @@ package world.cepi.luae.script
 
 import org.graalvm.polyglot.HostAccess
 import world.cepi.kstom.Manager
-import world.cepi.luae.wrapper.ScriptPlayer
+import world.cepi.luae.script.objects.wrapper.ScriptPlayer
 
 object Executor {
 

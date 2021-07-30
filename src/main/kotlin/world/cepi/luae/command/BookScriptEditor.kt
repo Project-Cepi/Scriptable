@@ -10,7 +10,7 @@ import world.cepi.luae.script.scriptString
 object BookScriptEditor : Command("book") {
 
     init {
-        addSyntax { sender ->
+        addSyntax {
             val player = sender as Player
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax

@@ -12,6 +12,7 @@ import org.graalvm.polyglot.management.ExecutionEvent
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
 import org.graalvm.polyglot.management.ExecutionListener
+import world.cepi.luae.script.objects.util.ScriptHelpers
 
 
 /**
@@ -49,6 +50,7 @@ fun run(scriptContext: ScriptContext): RunResult {
                 context.getBindings(currentLanguage).apply {
                     putMember("executor", Executor)
                     putMember("context", scriptContext)
+                    putMember("script", ScriptHelpers)
                 }
 
                 try {
