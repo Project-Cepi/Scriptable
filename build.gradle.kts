@@ -52,7 +52,7 @@ dependencies {
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
     // Add js support
-    implementation("org.graalvm.js:js:21.1.0")
+    implementation("org.graalvm.js:js:21.2.0")
 }
 
 tasks.withType<Test> {
