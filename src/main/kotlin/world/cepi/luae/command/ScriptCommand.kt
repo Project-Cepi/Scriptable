@@ -3,6 +3,7 @@ package world.cepi.luae.command
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.minestom.server.command.builder.Command
+import net.minestom.server.command.builder.arguments.ArgumentType
 import net.minestom.server.entity.Player
 import world.cepi.kstom.command.addSyntax
 import world.cepi.kstom.command.arguments.literal
@@ -20,6 +21,10 @@ object ScriptCommand : Command("script") {
         val create = "create".literal()
         val run = "run".literal()
         val list = "list".literal()
+        val quick = "quick".literal()
+        val quickContent = ArgumentType.StringArray("quickContent").map {
+            it.joinToString(" ")
+        }
 
         addSyntax(list) {
             val player = sender as Player
@@ -42,18 +47,11 @@ object ScriptCommand : Command("script") {
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
 
-            val runResult = Script(script).run(ScriptContext(
-                player,
-                player.instance,
-                player.position
-            ))
+            Script(script).runAsPlayer(player)
+        }
 
-            when (runResult) {
-                is RunResult.Success -> player.sendMessage(Component.text("Success!", NamedTextColor.GREEN))
-                is RunResult.Error -> {
-                    Component.text(runResult.message ?: "An internal error occurred while running this script", NamedTextColor.RED)
-                }
-            }
+        addSyntax(quick, quickContent) {
+            Script(context[quickContent]).runAsPlayer(sender as? Player ?: return@addSyntax)
         }
 
         addSubcommand(object : Command("editor") {

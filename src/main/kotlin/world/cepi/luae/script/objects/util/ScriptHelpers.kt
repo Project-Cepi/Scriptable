@@ -8,7 +8,6 @@ object ScriptHelpers {
 
     @HostAccess.Export
     fun sleep(time: Long) = Script.wrapPromise(CompletableFuture.runAsync {
-        println("a")
         Thread.sleep(time)
     })
 

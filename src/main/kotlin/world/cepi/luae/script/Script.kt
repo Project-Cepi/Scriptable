@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.tag.Tag
@@ -85,6 +86,21 @@ class Script(val content: String = "") {
         Thread.currentThread().contextClassLoader = oldCl
 
         return RunResult.Success
+    }
+
+    fun runAsPlayer(player: Player) {
+        val runResult = run(ScriptContext(
+            player,
+            player.instance,
+            player.position
+        ))
+
+        when (runResult) {
+            is RunResult.Success -> player.sendMessage(Component.text("Success!", NamedTextColor.GREEN))
+            is RunResult.Error -> {
+                Component.text(runResult.message ?: "An internal error occurred while running this script", NamedTextColor.RED)
+            }
+        }
     }
 
     fun asItem(): ItemStack = item(Material.PAPER) {
