@@ -1,5 +1,6 @@
 package world.cepi.luae.script
 
+import com.oracle.truffle.js.runtime.JSContextOptions
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -14,6 +15,7 @@ import world.cepi.kstom.item.withMeta
 import org.graalvm.polyglot.management.ExecutionListener
 import world.cepi.luae.script.objects.util.ScriptHelpers
 
+import java.util.concurrent.CompletableFuture
 
 /**
  * Something that can run code w/ context.
@@ -24,6 +26,16 @@ class Script(val content: String = "") {
     companion object {
         const val key = "luae-script"
         const val currentLanguage = "js"
+
+        fun <T> wrapPromise(javaFuture: CompletableFuture<T>) = Thenable { onResolve, onReject ->
+            javaFuture.whenComplete { result: T?, ex: Throwable? ->
+                if (ex == null)
+                    onResolve.execute(result)
+                else
+                    onReject.execute(ex)
+            }
+        }
+
     }
 
     /**
@@ -31,12 +43,19 @@ class Script(val content: String = "") {
      *
      * @return If this succeeded or not.
      */
-fun run(scriptContext: ScriptContext): RunResult {
+    fun run(scriptContext: ScriptContext): RunResult {
 
         val oldCl = Thread.currentThread().contextClassLoader
         Thread.currentThread().contextClassLoader = javaClass.classLoader
+
+        val consoleStream = LineReadingOutputStream { scriptContext.player?.sendMessage(it) }
+
         Context
             .newBuilder(currentLanguage)
+            .allowExperimentalOptions(true)
+            .option(JSContextOptions.INTEROP_COMPLETE_PROMISES_NAME, "true")
+            .option(JSContextOptions.CONSOLE_NAME, "true")
+            .out(consoleStream)
             .build()
             .use { context ->
 
@@ -56,17 +75,17 @@ fun run(scriptContext: ScriptContext): RunResult {
                 try {
                     context.eval(currentLanguage, content)
                 } catch (e: Exception) {
-                    scriptContext.player?.player?.sendMessage(
-                        Component.text(e.message ?: "An internal error occurred while running this script", NamedTextColor.RED)
-                    )
+                    listener.close()
+                    Thread.currentThread().contextClassLoader = oldCl
+                    return RunResult.Error(e.message)
                 }
                 listener.close()
         }
 
         Thread.currentThread().contextClassLoader = oldCl
 
-        return RunResult.SUCCESS
-}
+        return RunResult.Success
+    }
 
     fun asItem(): ItemStack = item(Material.PAPER) {
         displayName(Component.text("Script", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))

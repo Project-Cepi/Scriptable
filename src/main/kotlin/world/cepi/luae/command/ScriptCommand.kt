@@ -6,6 +6,7 @@ import net.minestom.server.command.builder.Command
 import net.minestom.server.entity.Player
 import world.cepi.kstom.command.addSyntax
 import world.cepi.kstom.command.arguments.literal
+import world.cepi.luae.script.RunResult
 import world.cepi.luae.script.Script
 import world.cepi.luae.script.ScriptContext
 import world.cepi.luae.script.scriptString
@@ -41,11 +42,18 @@ object ScriptCommand : Command("script") {
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
 
-            Script(script).run(ScriptContext(
+            val runResult = Script(script).run(ScriptContext(
                 player,
                 player.instance,
                 player.position
             ))
+
+            when (runResult) {
+                is RunResult.Success -> player.sendMessage(Component.text("Success!", NamedTextColor.GREEN))
+                is RunResult.Error -> {
+                    Component.text(runResult.message ?: "An internal error occurred while running this script", NamedTextColor.RED)
+                }
+            }
         }
 
         addSubcommand(object : Command("editor") {

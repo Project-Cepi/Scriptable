@@ -1,9 +1,8 @@
 package world.cepi.luae.script
 
-enum class RunResult {
+sealed class RunResult {
 
-    SUCCESS,
-    INVALID_CONTENT,
-    NOT_ENOUGH_CONTEXT
+    object Success : RunResult()
+    class Error(val message: String?) : RunResult()
 
 }
