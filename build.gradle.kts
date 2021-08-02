@@ -52,7 +52,8 @@ dependencies {
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
     // Add js support
-    implementation("org.graalvm.js:js:21.2.0")
+    implementation("com.github.Project-Cepi.Luae:luaj:37bfeac4c5")
+    implementation("com.github.Project-Cepi.Luae:api:37bfeac4c5")
 }
 
 tasks.withType<Test> {

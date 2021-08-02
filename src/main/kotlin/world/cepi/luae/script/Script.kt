@@ -1,6 +1,5 @@
 package world.cepi.luae.script
 
-import com.oracle.truffle.js.runtime.JSContextOptions
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -10,14 +9,12 @@ import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.tag.Tag
-import org.graalvm.polyglot.Context
-import org.graalvm.polyglot.management.ExecutionEvent
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
-import org.graalvm.polyglot.management.ExecutionListener
-import world.cepi.luae.script.objects.util.ScriptHelpers
-
-import java.util.concurrent.CompletableFuture
+import world.cepi.luae.Luae
+import world.cepi.luae.LuaeExecution
+import world.cepi.luae.lib.PrintLib
+import world.cepi.luae.script.lib.PrinterLibrary
 
 /**
  * Something that can run code w/ context.
@@ -27,19 +24,6 @@ class Script(val content: String = "") {
 
     companion object {
         const val key = "luae-script"
-        const val currentLanguage = "js"
-
-        fun <T> wrapPromise(javaFuture: CompletableFuture<T>) {
-            Promisable { onResolve, onReject ->
-                javaFuture.whenComplete { result: T?, ex: Throwable? ->
-                    if (ex == null)
-                        onResolve.execute(result)
-                    else
-                        onReject.execute(ex)
-                }
-            }
-        }
-
     }
 
     /**
@@ -49,44 +33,39 @@ class Script(val content: String = "") {
      */
     fun run(scriptContext: ScriptContext): RunResult {
 
-        val oldCl = Thread.currentThread().contextClassLoader
-        Thread.currentThread().contextClassLoader = javaClass.classLoader
+        // Make sure LuaJProvider is loaded so Luae is implemented.
+		Class.forName("world.cepi.luae.luaj.LuaJProvider")
 
-        val consoleStream = LineReadingOutputStream { scriptContext.sender?.sendMessage(it) }
+		val env = Luae.newTable();
+		Luae.installNeutralStandardLibrary(env); // Non-IO libraries basically (math, table, string, etc...)
 
-        Context
-            .newBuilder(currentLanguage)
-            .allowExperimentalOptions(true)
-            .option(JSContextOptions.INTEROP_COMPLETE_PROMISES_NAME, "true")
-            .option(JSContextOptions.CONSOLE_NAME, "true")
-            .out(consoleStream)
-            .build()
-            .use { context ->
+		// Print implementation
+		PrinterLibrary(scriptContext).install(env)
+		PrintLib().install(env);
 
-                val listener = ExecutionListener.newBuilder()
-                    .onEnter { e: ExecutionEvent ->
-                        // TODO stop running after X amount of iterations.
-                    }
-                    .statements(true)
-                    .attach(context.engine)
+		val exe = Luae.newExecution(content, "test", env, null);
 
-                context.getBindings(currentLanguage).apply {
-                    putMember("executor", Executor)
-                    putMember("context", scriptContext)
-                    putMember("script", ScriptHelpers)
-                }
+		val time = System.currentTimeMillis();
 
-                try {
-                    context.eval(currentLanguage, content)
-                } catch (e: Exception) {
-                    listener.close()
-                    Thread.currentThread().contextClassLoader = oldCl
-                    return RunResult.Error(e.message)
-                }
-                listener.close()
-        }
+		while (exe.tick());
+		// or: exe.run();
 
-        Thread.currentThread().contextClassLoader = oldCl
+		if (exe.state == LuaeExecution.LuaeExecutionState.CRASHED) {
+			if (exe.crashReason.errorObject is Throwable) {
+				(exe.crashReason.errorObject as Throwable).printStackTrace()
+			} else {
+				scriptContext.sender?.sendMessage("error: " + exe.crashReason.toString())
+				for (trace in exe.crashReason.stacktrace) {
+					scriptContext.sender?.sendMessage(trace);
+				}
+			}
+		} else {
+			scriptContext.sender?.sendMessage("end (${System.currentTimeMillis() - time}ms)")
+
+			for (obj in exe.returnValue) {
+				scriptContext.sender?.sendMessage(obj.toString());
+			}
+		}
 
         return RunResult.Success
     }
