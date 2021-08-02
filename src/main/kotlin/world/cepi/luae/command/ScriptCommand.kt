@@ -7,9 +7,7 @@ import net.minestom.server.command.builder.arguments.ArgumentType
 import net.minestom.server.entity.Player
 import world.cepi.kstom.command.addSyntax
 import world.cepi.kstom.command.arguments.literal
-import world.cepi.luae.script.RunResult
 import world.cepi.luae.script.Script
-import world.cepi.luae.script.ScriptContext
 import world.cepi.luae.script.scriptString
 
 /**
@@ -47,11 +45,11 @@ object ScriptCommand : Command("script") {
 
             val script = player.itemInMainHand.scriptString ?: return@addSyntax
 
-            Script(script).runAsPlayer(player)
+            Script(script).runAsSender(player)
         }
 
         addSyntax(quick, quickContent) {
-            Script(context[quickContent]).runAsPlayer(sender as? Player ?: return@addSyntax)
+            Script(context[quickContent]).runAsSender(sender)
         }
 
         addSubcommand(object : Command("editor") {

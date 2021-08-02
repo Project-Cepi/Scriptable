@@ -7,10 +7,7 @@ import org.graalvm.polyglot.HostAccess
 /**
  * Wrapper class for a player in a script object
  */
-class ScriptPlayer(val player: Player) : ScriptAudience {
-
-    @HostAccess.Export
-    override fun sendMessage(component: Component) = player.sendMessage(component)
+class ScriptPlayer(val player: Player) : ScriptSender(player) {
 
     @HostAccess.Export
     fun teleport(position: ScriptPosition) {

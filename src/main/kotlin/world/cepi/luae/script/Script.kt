@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.minestom.server.command.CommandSender
 import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
@@ -28,12 +29,14 @@ class Script(val content: String = "") {
         const val key = "luae-script"
         const val currentLanguage = "js"
 
-        fun <T> wrapPromise(javaFuture: CompletableFuture<T>) = Thenable { onResolve, onReject ->
-            javaFuture.whenComplete { result: T?, ex: Throwable? ->
-                if (ex == null)
-                    onResolve.execute(result)
-                else
-                    onReject.execute(ex)
+        fun <T> wrapPromise(javaFuture: CompletableFuture<T>) {
+            Promisable { onResolve, onReject ->
+                javaFuture.whenComplete { result: T?, ex: Throwable? ->
+                    if (ex == null)
+                        onResolve.execute(result)
+                    else
+                        onReject.execute(ex)
+                }
             }
         }
 
@@ -49,7 +52,7 @@ class Script(val content: String = "") {
         val oldCl = Thread.currentThread().contextClassLoader
         Thread.currentThread().contextClassLoader = javaClass.classLoader
 
-        val consoleStream = LineReadingOutputStream { scriptContext.player?.sendMessage(it) }
+        val consoleStream = LineReadingOutputStream { scriptContext.sender?.sendMessage(it) }
 
         Context
             .newBuilder(currentLanguage)
@@ -88,15 +91,15 @@ class Script(val content: String = "") {
         return RunResult.Success
     }
 
-    fun runAsPlayer(player: Player) {
+    fun runAsSender(sender: CommandSender) {
         val runResult = run(ScriptContext(
-            player,
-            player.instance,
-            player.position
+            sender,
+            (sender as? Player)?.instance,
+            (sender as? Player)?.position
         ))
 
         when (runResult) {
-            is RunResult.Success -> player.sendMessage(Component.text("Success!", NamedTextColor.GREEN))
+            is RunResult.Success -> sender.sendMessage(Component.text("Success!", NamedTextColor.GREEN))
             is RunResult.Error -> {
                 Component.text(runResult.message ?: "An internal error occurred while running this script", NamedTextColor.RED)
             }
