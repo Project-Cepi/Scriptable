@@ -54,9 +54,7 @@ dependencies {
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
     // Add js support
-    implementation("org.graalvm.sdk:graal-sdk:$graalVersion")
     implementation("org.graalvm.js:js:$graalVersion")
-    implementation("org.graalvm.js:js-scriptengine:$graalVersion")
 }
 
 tasks.withType<Test> {

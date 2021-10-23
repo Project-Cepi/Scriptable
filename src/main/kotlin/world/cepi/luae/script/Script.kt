@@ -32,9 +32,13 @@ class Script(val content: String = "") {
      */
     fun run(scriptContext: ScriptContext): RunResult {
 
+        val oldCl = Thread.currentThread().contextClassLoader
+        Thread.currentThread().contextClassLoader = javaClass.classLoader
 		val time = System.currentTimeMillis();
         Context.newBuilder("js")
-            .option("sandbox.MaxHeapMemory", "100MB").build()
+            .allowExperimentalOptions(true)
+//            .option("sandbox.MaxHeapMemory", "100MB")
+            .build()
             .use { context ->
                 val listener = ExecutionListener.newBuilder()
     //                .onEnter { e: ExecutionEvent ->}
@@ -52,6 +56,7 @@ class Script(val content: String = "") {
 
                 listener.close()
         }
+        Thread.currentThread().contextClassLoader = oldCl
 
         return RunResult.Success
     }
