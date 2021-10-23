@@ -3,17 +3,11 @@ package world.cepi.luae.script.lib
 import net.minestom.server.coordinate.Vec
 import org.graalvm.polyglot.HostAccess
 
-data class ScriptVec(
-    @get:HostAccess.Export
-    @set:HostAccess.Export
-    var x: Double,
-    @get:HostAccess.Export
-    @set:HostAccess.Export
-    var y: Double,
-    @get:HostAccess.Export
-    @set:HostAccess.Export
-    var z: Double
-) {
+class ScriptVec(
+    x: Double,
+    y: Double,
+    z: Double
+) : ScriptPoint(x, y, z) {
 
     fun toVec() = Vec(x, y, z)
 

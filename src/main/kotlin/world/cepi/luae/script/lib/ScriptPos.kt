@@ -3,23 +3,15 @@ package world.cepi.luae.script.lib
 import net.minestom.server.coordinate.Pos
 import org.graalvm.polyglot.HostAccess
 
-data class ScriptPos(
+class ScriptPos(
+    x: Double,
+    y: Double,
+    z: Double,
     @get:HostAccess.Export
-    @set:HostAccess.Export
-    var x: Double,
+    val yaw: Float,
     @get:HostAccess.Export
-    @set:HostAccess.Export
-    var y: Double,
-    @get:HostAccess.Export
-    @set:HostAccess.Export
-    var z: Double,
-    @get:HostAccess.Export
-    @set:HostAccess.Export
-    var yaw: Float,
-    @get:HostAccess.Export
-    @set:HostAccess.Export
-    var pitch: Float
-) {
+    val pitch: Float
+) : ScriptPoint(x, y, z) {
 
     fun toPosition() = Pos(x, y, z, yaw, pitch)
 
