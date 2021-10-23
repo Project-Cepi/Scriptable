@@ -35,20 +35,28 @@ class Script(val content: String = "") {
         val oldCl = Thread.currentThread().contextClassLoader
         Thread.currentThread().contextClassLoader = javaClass.classLoader
 		val time = System.currentTimeMillis();
+
+        var count = 0
+
         Context.newBuilder("js")
             .allowExperimentalOptions(true)
 //            .option("sandbox.MaxHeapMemory", "100MB")
             .build()
             .use { context ->
                 val listener = ExecutionListener.newBuilder()
-    //                .onEnter { e: ExecutionEvent ->}
+                    .onEnter { count++ }
+                    .expressions(true)
                     .statements(true)
+                    .roots(true)
                     .attach(context.engine)
 
                 try {
                     val returnValue = context.eval("js", content)
-                    scriptContext.sender?.sendMessage("end (${System.currentTimeMillis() - time}ms)")
-                    scriptContext.sender?.sendMessage(returnValue.toString());
+                    scriptContext.sender?.sendMessage(
+                        Component.text(returnValue.toString(), NamedTextColor.GRAY)
+                            .append(Component.text(" (${System.currentTimeMillis() - time}ms)", NamedTextColor.BLUE))
+                            .append(Component.text(" [steps -> $count]", NamedTextColor.GOLD))
+                    )
                 } catch (e: PolyglotException) {
                     scriptContext.sender?.sendMessage("error: $e")
                     return RunResult.Error(e.toString())
@@ -69,7 +77,7 @@ class Script(val content: String = "") {
         ))
 
         when (runResult) {
-            is RunResult.Success -> sender.sendMessage(Component.text("Success!", NamedTextColor.GREEN))
+            is RunResult.Success -> {}
             is RunResult.Error -> {
                 Component.text(runResult.message ?: "An internal error occurred while running this script", NamedTextColor.RED)
             }
