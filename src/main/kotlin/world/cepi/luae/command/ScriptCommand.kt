@@ -4,61 +4,48 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.minestom.server.command.builder.Command
 import net.minestom.server.command.builder.arguments.ArgumentType
-import net.minestom.server.entity.Player
-import world.cepi.kstom.command.addSyntax
 import world.cepi.kstom.command.arguments.literal
+import world.cepi.kstom.command.kommand.Kommand
 import world.cepi.luae.script.Script
 import world.cepi.luae.script.scriptString
 
 /**
  * Create and manage item scripts.
  */
-object ScriptCommand : Command("script") {
+object ScriptCommand : Kommand({
 
-    init {
-        val create = "create".literal()
-        val run = "run".literal()
-        val list = "list".literal()
-        val quick = "quick".literal()
-        val quickContent = ArgumentType.StringArray("quickContent").map {
-            it.joinToString(" ")
-        }
-
-        addSyntax(list) {
-            val player = sender as Player
-
-            val script = player.itemInMainHand.scriptString ?: return@addSyntax
-
-            script.split("\n").forEach {
-                player.sendMessage(Component.text(it, NamedTextColor.GRAY))
-            }
-        }
-
-        addSyntax(create) {
-            val player = sender as Player
-
-            player.inventory.addItemStack(Script().asItem())
-        }
-
-        addSyntax(run) {
-            val player = sender as Player
-
-            val script = player.itemInMainHand.scriptString ?: return@addSyntax
-
-            Script(script).runAsSender(player)
-        }
-
-        addSyntax(quick, quickContent) {
-            Script(context[quickContent]).runAsSender(sender)
-        }
-
-        addSubcommand(object : Command("editor") {
-            init {
-                addSubcommand(BookScriptEditor)
-                addSubcommand(LineScriptEditor)
-            }
-        })
-
+    val create = "create".literal()
+    val run = "run".literal()
+    val list = "list".literal()
+    val quick = "quick".literal()
+    val quickContent = ArgumentType.StringArray("quickContent").map {
+        it.joinToString(" ")
     }
 
-}
+    syntax(list) {
+        val script = player.itemInMainHand.scriptString ?: return@syntax
+
+        script.split("\n").forEach {
+            player.sendMessage(Component.text(it, NamedTextColor.GRAY))
+        }
+    }
+
+    syntax(create) {
+        player.inventory.addItemStack(Script().asItem())
+    }
+
+    syntax(run) {
+        val script = player.itemInMainHand.scriptString ?: return@syntax
+
+        Script(script).runAsSender(player)
+    }
+
+    syntax(quick, quickContent) {
+        Script(!quickContent).runAsSender(sender)
+    }
+
+    addSubcommands(object : Kommand({
+        addSubcommands(BookScriptEditor, LineScriptEditor)
+    }, "editor") {})
+
+}, "script")

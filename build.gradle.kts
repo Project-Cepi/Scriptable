@@ -29,6 +29,8 @@ repositories {
     maven(url = "https://repo.velocitypowered.com/snapshots/")
 }
 
+val graalVersion = "21.2.0"
+
 dependencies {
     // Align versions of all Kotlin components
     compileOnly(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -46,14 +48,15 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
 
     // Get KStom
-    compileOnly("com.github.Project-Cepi:KStom:57d46cd5f9")
+    compileOnly("com.github.Project-Cepi:KStom:5daaf786cf")
 
     // Add Kepi
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
     // Add js support
-    implementation("com.github.Project-Cepi.Luae:luaj:37bfeac4c5")
-    implementation("com.github.Project-Cepi.Luae:api:37bfeac4c5")
+    implementation("org.graalvm.sdk:graal-sdk:$graalVersion")
+    implementation("org.graalvm.js:js:$graalVersion")
+    implementation("org.graalvm.js:js-scriptengine:$graalVersion")
 }
 
 tasks.withType<Test> {

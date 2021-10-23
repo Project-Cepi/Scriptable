@@ -1,7 +1,5 @@
-# LuaecEditor
-Editor for Cepi based on Luae.
-
-Luae is an indirect Quranic name for boys that means “flat area of sand”.
+# Scriptable
+Script editor for Cepi
 
 ## How it works
 

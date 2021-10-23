@@ -9,12 +9,11 @@ import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.tag.Tag
+import org.graalvm.polyglot.Context
+import org.graalvm.polyglot.PolyglotException
+import org.graalvm.polyglot.management.ExecutionListener
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
-import world.cepi.luae.Luae
-import world.cepi.luae.LuaeExecution
-import world.cepi.luae.lib.PrintLib
-import world.cepi.luae.script.lib.PrinterLibrary
 
 /**
  * Something that can run code w/ context.
@@ -33,39 +32,26 @@ class Script(val content: String = "") {
      */
     fun run(scriptContext: ScriptContext): RunResult {
 
-        // Make sure LuaJProvider is loaded so Luae is implemented.
-		Class.forName("world.cepi.luae.luaj.LuaJProvider")
-
-		val env = Luae.newTable();
-		Luae.installNeutralStandardLibrary(env); // Non-IO libraries basically (math, table, string, etc...)
-
-		// Print implementation
-		PrinterLibrary(scriptContext).install(env)
-		PrintLib().install(env);
-
-		val exe = Luae.newExecution(content, "test", env, null);
-
 		val time = System.currentTimeMillis();
+        Context.newBuilder("js")
+            .option("sandbox.MaxHeapMemory", "100MB").build()
+            .use { context ->
+                val listener = ExecutionListener.newBuilder()
+    //                .onEnter { e: ExecutionEvent ->}
+                    .statements(true)
+                    .attach(context.engine)
 
-		while (exe.tick());
-		// or: exe.run();
+                try {
+                    val returnValue = context.eval("js", content)
+                    scriptContext.sender?.sendMessage("end (${System.currentTimeMillis() - time}ms)")
+                    scriptContext.sender?.sendMessage(returnValue.toString());
+                } catch (e: PolyglotException) {
+                    scriptContext.sender?.sendMessage("error: $e")
+                    return RunResult.Error(e.toString())
+                }
 
-		if (exe.state == LuaeExecution.LuaeExecutionState.CRASHED) {
-			if (exe.crashReason.errorObject is Throwable) {
-				(exe.crashReason.errorObject as Throwable).printStackTrace()
-			} else {
-				scriptContext.sender?.sendMessage("error: " + exe.crashReason.toString())
-				for (trace in exe.crashReason.stacktrace) {
-					scriptContext.sender?.sendMessage(trace);
-				}
-			}
-		} else {
-			scriptContext.sender?.sendMessage("end (${System.currentTimeMillis() - time}ms)")
-
-			for (obj in exe.returnValue) {
-				scriptContext.sender?.sendMessage(obj.toString());
-			}
-		}
+                listener.close()
+        }
 
         return RunResult.Success
     }
