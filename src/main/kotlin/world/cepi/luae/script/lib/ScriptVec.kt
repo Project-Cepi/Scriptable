@@ -1,10 +1,9 @@
 package world.cepi.luae.script.lib
 
-import net.minestom.server.coordinate.Pos
 import net.minestom.server.coordinate.Vec
 import org.graalvm.polyglot.HostAccess
 
-class ScriptVec(
+data class ScriptVec(
     @get:HostAccess.Export
     @set:HostAccess.Export
     var x: Double,

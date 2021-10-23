@@ -29,6 +29,28 @@ open class ScriptEntity(val entity: Entity) {
             entity.velocity = value.toVec()
         }
 
+    @HostAccess.Export
+    fun onGround() = entity.isOnGround
+
+    @HostAccess.Export
+    fun onFire() = entity.isOnFire
+
+    @HostAccess.Export
+    fun onFire(flag: Boolean) {
+        entity.isOnFire = true
+    }
+
+    @get:HostAccess.Export
+    @set:HostAccess.Export
+    var glowing
+        get() = entity.isGlowing
+        set(value) {
+            entity.isGlowing = value
+        }
+
+    @HostAccess.Export
+    fun remove() = entity.remove()
+
     @JvmOverloads
     @HostAccess.Export
     fun nearestEntities(distanceCap: Double = Double.MAX_VALUE): List<ScriptEntity>? =

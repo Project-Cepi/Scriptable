@@ -3,7 +3,7 @@ package world.cepi.luae.script.lib
 import net.minestom.server.coordinate.Pos
 import org.graalvm.polyglot.HostAccess
 
-class ScriptPos(
+data class ScriptPos(
     @get:HostAccess.Export
     @set:HostAccess.Export
     var x: Double,
