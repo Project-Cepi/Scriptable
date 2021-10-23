@@ -15,7 +15,8 @@ import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
 import world.cepi.luae.script.lib.ScriptContext
 import world.cepi.luae.script.lib.ScriptPlayer
-import world.cepi.luae.script.lib.ScriptPosition
+import world.cepi.luae.script.lib.ScriptPos
+import world.cepi.luae.script.lib.ScriptVec
 
 /**
  * Something that can run code w/ context.
@@ -48,7 +49,8 @@ class Script(val content: String = "") {
 
                 context.getBindings("js").apply {
                     putMember("context", scriptContext)
-                    putMember("ScriptPosition", ScriptPosition)
+                    putMember("ScriptPos", ScriptPos)
+                    putMember("ScriptVec", ScriptVec)
                 }
 
                 val listener = ExecutionListener.newBuilder()
@@ -81,7 +83,7 @@ class Script(val content: String = "") {
         val runResult = run(
             ScriptContext(
             ScriptPlayer(player),
-            ScriptPosition.fromPosition(player.position)
+            ScriptPos.fromPosition(player.position)
         )
         )
 
