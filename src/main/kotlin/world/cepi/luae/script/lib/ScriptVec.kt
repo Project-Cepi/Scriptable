@@ -9,8 +9,6 @@ class ScriptVec(
     z: Double
 ) : ScriptPoint(x, y, z) {
 
-    fun toVec() = Vec(x, y, z)
-
     companion object {
 
         @HostAccess.Export

@@ -13,6 +13,9 @@ class ScriptInstance(val instance: Instance) : ScriptTickable(instance) {
             instance.time = value
         }
 
+    @HostAccess.Export
+    fun blockAt(point: ScriptPoint) = ScriptBlock(instance.getBlock(point.toVec()))
+
     @get:HostAccess.Export
     val players: Set<ScriptPlayer>
         get() = instance.players.map { ScriptPlayer(it) }.toSet()
