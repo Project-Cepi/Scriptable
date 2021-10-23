@@ -1,9 +1,10 @@
-package world.cepi.luae.script
+package world.cepi.luae.script.lib
 
 import net.minestom.server.command.CommandSender
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.Player
 import net.minestom.server.instance.Instance
+import org.graalvm.polyglot.HostAccess
 import world.cepi.luae.script.lib.ScriptPlayer
 import world.cepi.luae.script.lib.ScriptPosition
 
@@ -12,7 +13,9 @@ import world.cepi.luae.script.lib.ScriptPosition
  */
 data class ScriptContext(
     /** Who executed it */
-    val sender: ScriptPlayer?,
+    @get:HostAccess.Export
+    val player: ScriptPlayer?,
     /** Where it was executed */
+    @get:HostAccess.Export
     val position: ScriptPosition?
 )

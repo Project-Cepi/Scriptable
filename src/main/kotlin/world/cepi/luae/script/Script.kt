@@ -13,6 +13,7 @@ import org.graalvm.polyglot.PolyglotException
 import org.graalvm.polyglot.management.ExecutionListener
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
+import world.cepi.luae.script.lib.ScriptContext
 import world.cepi.luae.script.lib.ScriptPlayer
 import world.cepi.luae.script.lib.ScriptPosition
 
@@ -58,13 +59,13 @@ class Script(val content: String = "") {
 
                 try {
                     val returnValue = context.eval("js", content)
-                    scriptContext.sender?.sendMessage(
+                    scriptContext.player?.sendMessage(
                         Component.text(returnValue.toString(), NamedTextColor.GRAY)
                             .append(Component.text(" (${System.currentTimeMillis() - time}ms)", NamedTextColor.BLUE))
                             .append(Component.text(" [steps -> $count]", NamedTextColor.GOLD))
                     )
                 } catch (e: PolyglotException) {
-                    scriptContext.sender?.sendMessage("error: $e")
+                    scriptContext.player?.sendMessage(Component.text("error: $e", NamedTextColor.RED))
                     return RunResult.Error(e.toString())
                 }
 
@@ -76,10 +77,12 @@ class Script(val content: String = "") {
     }
 
     fun runAsPlayer(player: Player) {
-        val runResult = run(ScriptContext(
+        val runResult = run(
+            ScriptContext(
             ScriptPlayer(player),
             ScriptPosition.fromPosition(player.position)
-        ))
+        )
+        )
 
         when (runResult) {
             is RunResult.Success -> {}

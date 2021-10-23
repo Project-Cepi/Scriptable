@@ -43,8 +43,8 @@ object ScriptCommand : Kommand({
         Script(!quickContent).runAsPlayer(player)
     }
 
-    addSubcommands(object : Kommand({
-        addSubcommands(BookScriptEditor, LineScriptEditor)
-    }, "editor") {})
+    addSubcommands(BookScriptEditor)
+
+    LineScriptEditor.k(this)
 
 }, "script")
