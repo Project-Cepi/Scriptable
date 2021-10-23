@@ -1,6 +1,7 @@
 package world.cepi.luae.script.lib
 
 import net.minestom.server.entity.Entity
+import net.minestom.server.instance.Instance
 import org.graalvm.polyglot.HostAccess
 
 /**
@@ -51,13 +52,22 @@ open class ScriptEntity(val entity: Entity) {
     @HostAccess.Export
     fun remove() = entity.remove()
 
+    @get:HostAccess.Export
+    @set:HostAccess.Export
+    var instance: ScriptInstance?
+        get() = entity.instance?.let { ScriptInstance(it) }
+        set(value) {
+            entity.setInstance(value!!.instance)
+        }
+
     @JvmOverloads
     @HostAccess.Export
-    fun nearestEntities(distanceCap: Double = Double.MAX_VALUE): List<ScriptEntity>? =
+    fun nearestEntities(distanceCap: Double = Double.MAX_VALUE): Set<ScriptEntity>? =
         entity.instance?.entities
             ?.filter { it != entity }
             ?.filter { it.getDistance(entity) <= distanceCap }
             ?.sortedBy { it.getDistance(entity) }?.map { ScriptEntity(it) }
+            ?.toSet()
 
     @JvmOverloads
     @HostAccess.Export
