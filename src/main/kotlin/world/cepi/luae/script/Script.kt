@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import net.minestom.server.command.CommandSender
 import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
@@ -14,6 +13,8 @@ import org.graalvm.polyglot.PolyglotException
 import org.graalvm.polyglot.management.ExecutionListener
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
+import world.cepi.luae.script.lib.ScriptPlayer
+import world.cepi.luae.script.lib.ScriptPosition
 
 /**
  * Something that can run code w/ context.
@@ -43,6 +44,11 @@ class Script(val content: String = "") {
 //            .option("sandbox.MaxHeapMemory", "100MB")
             .build()
             .use { context ->
+
+                context.getBindings("js").apply {
+                    putMember("context", scriptContext)
+                }
+
                 val listener = ExecutionListener.newBuilder()
                     .onEnter { count++ }
                     .expressions(true)
@@ -69,11 +75,10 @@ class Script(val content: String = "") {
         return RunResult.Success
     }
 
-    fun runAsSender(sender: CommandSender) {
+    fun runAsPlayer(player: Player) {
         val runResult = run(ScriptContext(
-            sender,
-            (sender as? Player)?.instance,
-            (sender as? Player)?.position
+            ScriptPlayer(player),
+            ScriptPosition.fromPosition(player.position)
         ))
 
         when (runResult) {
