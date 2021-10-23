@@ -48,6 +48,7 @@ class Script(val content: String = "") {
 
                 context.getBindings("js").apply {
                     putMember("context", scriptContext)
+                    putMember("ScriptPosition", ScriptPosition)
                 }
 
                 val listener = ExecutionListener.newBuilder()

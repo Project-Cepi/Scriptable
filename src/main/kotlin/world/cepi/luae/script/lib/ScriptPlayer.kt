@@ -18,7 +18,12 @@ class ScriptPlayer(val player: Player) : ScriptAudience {
     }
 
     @get:HostAccess.Export
-    val position = player.position
+    @set:HostAccess.Export
+    var position
+        get() = ScriptPosition.fromPosition(player.position)
+        set(value) {
+            player.teleport(value.toPosition())
+        }
 
     @get:HostAccess.Export
     val latency = player.latency

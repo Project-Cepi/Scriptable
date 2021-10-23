@@ -3,7 +3,7 @@ package world.cepi.luae.script.lib
 import net.minestom.server.coordinate.Pos
 import org.graalvm.polyglot.HostAccess
 
-class ScriptPosition @HostAccess.Export constructor(
+class ScriptPosition(
     @get:HostAccess.Export
     @set:HostAccess.Export
     var x: Double,
@@ -24,6 +24,13 @@ class ScriptPosition @HostAccess.Export constructor(
     fun toPosition() = Pos(x, y, z, yaw, pitch)
 
     companion object {
+
+        @JvmOverloads
+        @HostAccess.Export
+        fun new(x: Double, y: Double, z: Double, yaw: Float = 0f, pitch: Float = 0f) =
+            ScriptPosition(x, y, z, yaw, pitch)
+
+
         fun fromPosition(position: Pos): ScriptPosition =
             ScriptPosition(
                 position.x(),
