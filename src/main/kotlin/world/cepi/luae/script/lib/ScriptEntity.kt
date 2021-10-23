@@ -1,13 +1,12 @@
 package world.cepi.luae.script.lib
 
 import net.minestom.server.entity.Entity
-import net.minestom.server.instance.Instance
 import org.graalvm.polyglot.HostAccess
 
 /**
  * Wrapper class for a player in a script object
  */
-open class ScriptEntity(val entity: Entity) {
+open class ScriptEntity(val entity: Entity) : ScriptTickable(entity) {
 
     @HostAccess.Export
     fun teleport(position: ScriptPos) {
@@ -73,5 +72,7 @@ open class ScriptEntity(val entity: Entity) {
     @HostAccess.Export
     fun nearestEntity(distanceCap: Double = Double.MAX_VALUE): ScriptEntity? =
         nearestEntities(distanceCap)?.first()
+
+    override fun toString() = "ScriptEntity<${entity.entityType.namespace().path}, ${entity.uuid}>"
 
 }

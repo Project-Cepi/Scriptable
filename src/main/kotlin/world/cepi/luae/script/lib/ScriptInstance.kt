@@ -1,11 +1,9 @@
 package world.cepi.luae.script.lib
 
-import net.minestom.server.entity.Entity
-import net.minestom.server.entity.Player
 import net.minestom.server.instance.Instance
 import org.graalvm.polyglot.HostAccess
 
-class ScriptInstance(val instance: Instance) {
+class ScriptInstance(val instance: Instance) : ScriptTickable(instance) {
 
     @get:HostAccess.Export
     @set:HostAccess.Export
@@ -16,11 +14,11 @@ class ScriptInstance(val instance: Instance) {
         }
 
     @get:HostAccess.Export
-    val players: Set<Player>
-        get() = instance.players
+    val players: Set<ScriptPlayer>
+        get() = instance.players.map { ScriptPlayer(it) }.toSet()
 
     @get:HostAccess.Export
-    val entities: Set<Entity>
-        get() = instance.entities
+    val entities: Set<ScriptEntity>
+        get() = instance.entities.map { ScriptEntity(it) }.toSet()
 
 }

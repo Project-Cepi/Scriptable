@@ -26,4 +26,6 @@ class ScriptPlayer(val player: Player) : ScriptEntity(player), ScriptAudience {
     @get:HostAccess.Export
     val username: String = player.username
 
+    override fun toString() = "ScriptPlayer<${entity.uuid}>"
+
 }
