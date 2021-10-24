@@ -59,6 +59,24 @@ open class ScriptEntity(val entity: Entity) : ScriptTickable(entity) {
             entity.setInstance(value!!.instance)
         }
 
+    @get:HostAccess.Export
+    val passengers: Set<ScriptEntity>
+        get() = entity.passengers.map { ScriptEntity(it) }.toSet()
+
+    @HostAccess.Export
+    fun addPassenger(passenger: ScriptEntity) {
+        entity.addPassenger(passenger.entity)
+    }
+
+    @HostAccess.Export
+    fun removePassenger(passenger: ScriptEntity) {
+        entity.removePassenger(passenger.entity)
+    }
+
+    @get:HostAccess.Export
+    val vehicle: ScriptEntity?
+        get() = entity.vehicle?.let { ScriptEntity(it) }
+
     @JvmOverloads
     @HostAccess.Export
     fun nearestEntities(distanceCap: Double = Double.MAX_VALUE): Set<ScriptEntity>? =
