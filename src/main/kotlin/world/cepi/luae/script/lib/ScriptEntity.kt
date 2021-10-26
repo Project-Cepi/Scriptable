@@ -2,92 +2,96 @@ package world.cepi.luae.script.lib
 
 import net.minestom.server.entity.Entity
 import org.graalvm.polyglot.HostAccess
+import world.cepi.luae.script.access.ScriptableExport
 
 /**
  * Wrapper class for a player in a script object
  */
 open class ScriptEntity(val entity: Entity) : ScriptTickable(entity) {
 
-    @HostAccess.Export
+    @ScriptableExport
     fun teleport(position: ScriptPos) {
         entity.teleport(position.toPosition())
     }
 
-    @get:HostAccess.Export
-    @set:HostAccess.Export
+    @get:ScriptableExport
+    @set:ScriptableExport
     var position
         get() = ScriptPos.fromPosition(entity.position)
         set(value) {
             entity.teleport(value.toPosition())
         }
 
-    @get:HostAccess.Export
-    @set:HostAccess.Export
+    @get:ScriptableExport
+    @set:ScriptableExport
     var velocity
         get() = ScriptVec.fromVec(entity.velocity)
         set(value) {
             entity.velocity = value.toVec()
         }
 
-    @HostAccess.Export
-    fun onGround() = entity.isOnGround
+    @get:ScriptableExport
+    val onGround get() = entity.isOnGround
 
-    @HostAccess.Export
-    fun onFire() = entity.isOnFire
+    @get:ScriptableExport
+    var onFire: Boolean
+        get() = entity.isOnFire
+        set(value) {
+            entity.isOnFire = true
+        }
 
-    @HostAccess.Export
-    fun onFire(flag: Boolean) {
-        entity.isOnFire = true
-    }
-
-    @get:HostAccess.Export
-    @set:HostAccess.Export
+    @get:ScriptableExport
+    @set:ScriptableExport
     var glowing
         get() = entity.isGlowing
         set(value) {
             entity.isGlowing = value
         }
 
-    @HostAccess.Export
+    @ScriptableExport
     fun remove() = entity.remove()
 
-    @get:HostAccess.Export
-    @set:HostAccess.Export
+    @get:ScriptableExport
+    @set:ScriptableExport
     var instance: ScriptInstance?
         get() = entity.instance?.let { ScriptInstance(it) }
         set(value) {
             entity.setInstance(value!!.instance)
         }
 
-    @get:HostAccess.Export
+    @get:ScriptableExport
+    val isOnGround get() = entity.isOnGround
+
+    @get:ScriptableExport
     val passengers: Set<ScriptEntity>
         get() = entity.passengers.map { ScriptEntity(it) }.toSet()
 
-    @HostAccess.Export
+    @ScriptableExport
     fun addPassenger(passenger: ScriptEntity) {
         entity.addPassenger(passenger.entity)
     }
 
-    @HostAccess.Export
+    @ScriptableExport
     fun removePassenger(passenger: ScriptEntity) {
         entity.removePassenger(passenger.entity)
     }
 
-    @get:HostAccess.Export
+    @get:ScriptableExport
     val vehicle: ScriptEntity?
         get() = entity.vehicle?.let { ScriptEntity(it) }
 
     @JvmOverloads
-    @HostAccess.Export
+    @ScriptableExport
     fun nearestEntities(distanceCap: Double = Double.MAX_VALUE): Set<ScriptEntity>? =
         entity.instance?.entities
+            ?.asSequence()
             ?.filter { it != entity }
             ?.filter { it.getDistance(entity) <= distanceCap }
             ?.sortedBy { it.getDistance(entity) }?.map { ScriptEntity(it) }
             ?.toSet()
 
     @JvmOverloads
-    @HostAccess.Export
+    @ScriptableExport
     fun nearestEntity(distanceCap: Double = Double.MAX_VALUE): ScriptEntity? =
         nearestEntities(distanceCap)?.first()
 

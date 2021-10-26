@@ -2,25 +2,31 @@ package world.cepi.luae.script.lib
 
 import net.minestom.server.instance.Instance
 import org.graalvm.polyglot.HostAccess
+import world.cepi.luae.script.access.ScriptableExport
 
 class ScriptInstance(val instance: Instance) : ScriptTickable(instance) {
 
-    @get:HostAccess.Export
-    @set:HostAccess.Export
+    @get:ScriptableExport
+    @set:ScriptableExport
     var time: Long
         get() = instance.time
         set(value) {
             instance.time = value
         }
 
-    @HostAccess.Export
+    @ScriptableExport
     fun blockAt(point: ScriptPoint) = ScriptBlock(instance.getBlock(point.toVec()))
 
-    @get:HostAccess.Export
+    @ScriptableExport
+    fun setBlock(point: ScriptPoint, block: ScriptBlock) {
+        instance.setBlock(point.toVec(), block.block)
+    }
+
+    @get:ScriptableExport
     val players: Set<ScriptPlayer>
         get() = instance.players.map { ScriptPlayer(it) }.toSet()
 
-    @get:HostAccess.Export
+    @get:ScriptableExport
     val entities: Set<ScriptEntity>
         get() = instance.entities.map { ScriptEntity(it) }.toSet()
 

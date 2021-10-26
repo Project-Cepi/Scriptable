@@ -2,6 +2,7 @@ package world.cepi.luae.script.lib
 
 import net.minestom.server.coordinate.Vec
 import org.graalvm.polyglot.HostAccess
+import world.cepi.luae.script.access.ScriptableExport
 
 class ScriptVec(
     x: Double,
@@ -11,7 +12,7 @@ class ScriptVec(
 
     companion object {
 
-        @HostAccess.Export
+        @ScriptableExport
         fun new(x: Double, y: Double, z: Double) =
             ScriptVec(x, y, z)
 

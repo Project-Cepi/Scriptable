@@ -13,6 +13,7 @@ import org.graalvm.polyglot.PolyglotException
 import org.graalvm.polyglot.management.ExecutionListener
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
+import world.cepi.luae.script.access.ScriptableExplicitConfig
 import world.cepi.luae.script.lib.ScriptContext
 import world.cepi.luae.script.lib.ScriptPlayer
 import world.cepi.luae.script.lib.ScriptPos
@@ -43,14 +44,14 @@ class Script(val content: String = "") {
 
         Context.newBuilder("js")
             .allowExperimentalOptions(true)
-//            .option("sandbox.MaxHeapMemory", "100MB")
+            .allowHostAccess(ScriptableExplicitConfig.explicitMode)
             .build()
             .use { context ->
 
                 context.getBindings("js").apply {
                     putMember("context", scriptContext)
-                    putMember("ScriptPos", ScriptPos)
-                    putMember("ScriptVec", ScriptVec)
+                    putMember("Pos", ScriptPos)
+                    putMember("Vec", ScriptVec)
                 }
 
                 val listener = ExecutionListener.newBuilder()
