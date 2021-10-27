@@ -1,2 +1,2 @@
-rootProject.name = "LuaeEngine"
+rootProject.name = "Scriptable"
 

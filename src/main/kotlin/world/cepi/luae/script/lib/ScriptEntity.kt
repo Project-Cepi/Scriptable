@@ -37,8 +37,9 @@ open class ScriptEntity(val entity: Entity) : ScriptTickable(entity) {
     var onFire: Boolean
         get() = entity.isOnFire
         set(value) {
-            entity.isOnFire = true
+            entity.isOnFire = value
         }
+
 
     @get:ScriptableExport
     @set:ScriptableExport
