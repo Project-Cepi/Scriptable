@@ -31,6 +31,14 @@ open class ScriptEntity(val entity: Entity) : ScriptTickable(entity) {
         }
 
     @get:ScriptableExport
+    @set:ScriptableExport
+    var sneaking
+        get() = entity.isSneaking
+        set(value) {
+            entity.isSneaking = value
+        }
+
+    @get:ScriptableExport
     val onGround get() = entity.isOnGround
 
     @get:ScriptableExport

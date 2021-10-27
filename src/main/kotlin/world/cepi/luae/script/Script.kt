@@ -14,10 +14,7 @@ import org.graalvm.polyglot.management.ExecutionListener
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
 import world.cepi.luae.script.access.ScriptableExplicitConfig
-import world.cepi.luae.script.lib.ScriptContext
-import world.cepi.luae.script.lib.ScriptPlayer
-import world.cepi.luae.script.lib.ScriptPos
-import world.cepi.luae.script.lib.ScriptVec
+import world.cepi.luae.script.lib.*
 
 /**
  * Something that can run code w/ context.
@@ -52,6 +49,8 @@ class Script(val content: String = "") {
                     putMember("context", scriptContext)
                     putMember("Pos", ScriptPos)
                     putMember("Vec", ScriptVec)
+                    putMember("Audiences", ScriptAudiences)
+                    putMember("chance", ScriptChance::chance)
                 }
 
                 val listener = ExecutionListener.newBuilder()
@@ -81,12 +80,10 @@ class Script(val content: String = "") {
     }
 
     fun runAsPlayer(player: Player) {
-        val runResult = run(
-            ScriptContext(
+        val runResult = run(ScriptContext(
             ScriptPlayer(player),
             ScriptPos.fromPosition(player.position)
-        )
-        )
+        ))
 
         when (runResult) {
             is RunResult.Success -> {}
