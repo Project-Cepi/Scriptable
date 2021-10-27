@@ -63,13 +63,13 @@ class Script(val content: String = "") {
 
                 try {
                     val returnValue = context.eval("js", content)
-                    scriptContext.player?.sendMessage(
+                    scriptContext.player?.player?.sendMessage(
                         Component.text(returnValue.toString(), NamedTextColor.GRAY)
                             .append(Component.text(" (${System.currentTimeMillis() - time}ms)", NamedTextColor.BLUE))
                             .append(Component.text(" [steps -> $count]", NamedTextColor.GOLD))
                     )
                 } catch (e: PolyglotException) {
-                    scriptContext.player?.sendMessage(Component.text("error: $e", NamedTextColor.RED))
+                    scriptContext.player?.player?.sendMessage(Component.text("error: $e", NamedTextColor.RED))
                     return RunResult.Error(e.toString())
                 }
 
