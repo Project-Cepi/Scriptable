@@ -15,6 +15,7 @@ import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
 import world.cepi.luae.script.access.ScriptableExplicitConfig
 import world.cepi.luae.script.lib.*
+import kotlin.concurrent.thread
 
 /**
  * Something that can run code w/ context.
@@ -26,12 +27,17 @@ class Script(val content: String = "") {
         const val key = "luae-script"
     }
 
+    fun graalContext() = Context.newBuilder("js")
+        .allowExperimentalOptions(true)
+        .allowHostAccess(ScriptableExplicitConfig.explicitMode)
+        .build()
+
     /**
      * Runs a set of objects with some context.
      *
      * @return If this succeeded or not.
      */
-    fun run(scriptContext: ScriptContext): RunResult {
+    fun run(scriptContext: ScriptContext) {
 
         val oldCl = Thread.currentThread().contextClassLoader
         Thread.currentThread().contextClassLoader = javaClass.classLoader
@@ -39,18 +45,16 @@ class Script(val content: String = "") {
 
         var count = 0
 
-        Context.newBuilder("js")
-            .allowExperimentalOptions(true)
-            .allowHostAccess(ScriptableExplicitConfig.explicitMode)
-            .build()
-            .use { context ->
-
+        thread {
+            graalContext().use { context ->
                 context.getBindings("js").apply {
                     putMember("context", scriptContext)
                     putMember("Pos", ScriptPos)
                     putMember("Vec", ScriptVec)
                     putMember("Audiences", ScriptAudiences)
-                    putMember("chance", ScriptChance::chance)
+                    putMember("Chance", ScriptChance) // Chance.chance
+                    putMember("Timer", ScriptTimer) // Timer.sleep
+                    putMember("Executor", ScriptExecutor(scriptContext)) // Executor.execute
                 }
 
                 val listener = ExecutionListener.newBuilder()
@@ -68,30 +72,21 @@ class Script(val content: String = "") {
                             .append(Component.text(" [steps -> $count]", NamedTextColor.GOLD))
                     )
                 } catch (e: PolyglotException) {
-                    scriptContext.player?.player?.sendMessage(Component.text("error: $e", NamedTextColor.RED))
-                    return RunResult.Error(e.toString())
+                    scriptContext.player?.player?.sendMessage(Component.text("error: ${e.message}", NamedTextColor.RED))
                 }
 
                 listener.close()
-        }
-        Thread.currentThread().contextClassLoader = oldCl
-
-        return RunResult.Success
-    }
-
-    fun runAsPlayer(player: Player) {
-        val runResult = run(ScriptContext(
-            ScriptPlayer(player),
-            ScriptPos.fromPosition(player.position)
-        ))
-
-        when (runResult) {
-            is RunResult.Success -> {}
-            is RunResult.Error -> {
-                Component.text(runResult.message ?: "An internal error occurred while running this script", NamedTextColor.RED)
             }
         }
+
+        Thread.currentThread().contextClassLoader = oldCl
     }
+
+    fun runAsPlayer(player: Player) = run(ScriptContext(
+        ScriptPlayer(player),
+        ScriptPos.fromPosition(player.position)
+    ))
+
 
     fun asItem(): ItemStack = item(Material.PAPER) {
         displayName(Component.text("Script", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))

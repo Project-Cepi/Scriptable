@@ -2,9 +2,9 @@ package world.cepi.luae.script.lib
 
 import world.cepi.luae.script.access.ScriptableExport
 
-object ScriptChance {
+object ScriptTimer {
 
     @ScriptableExport
-    fun chance(percent: Double): Boolean = Math.random() < percent
+    fun sleep(time: Long) = Thread.sleep(time)
 
 }
