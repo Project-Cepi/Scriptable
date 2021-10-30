@@ -15,6 +15,9 @@ import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
 import world.cepi.luae.script.access.ScriptableExplicitConfig
 import world.cepi.luae.script.lib.*
+import java.time.Instant
+import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 
 /**
@@ -43,9 +46,10 @@ class Script(val content: String = "") {
         Thread.currentThread().contextClassLoader = javaClass.classLoader
 		val time = System.currentTimeMillis();
 
-        var count = 0
+        val atomicInteger = AtomicInteger()
+        val uuid = UUID.randomUUID()
 
-        thread {
+        val currentThread = thread {
             graalContext().use { context ->
                 context.getBindings("js").apply {
                     putMember("context", scriptContext)
@@ -58,7 +62,16 @@ class Script(val content: String = "") {
                 }
 
                 val listener = ExecutionListener.newBuilder()
-                    .onEnter { count++ }
+                    .onEnter {
+                        val currentAmount = atomicInteger.addAndGet(1)
+
+                        if (currentAmount > 10_000) {
+                            scriptContext.player?.player?.sendMessage(
+                                Component.text("Script over 10,000 steps. Stopping", NamedTextColor.RED)
+                            )
+                            ScriptManager.interrupt(uuid)
+                        }
+                    }
                     .expressions(true)
                     .statements(true)
                     .roots(true)
@@ -69,7 +82,7 @@ class Script(val content: String = "") {
                     scriptContext.player?.player?.sendMessage(
                         Component.text(returnValue.toString(), NamedTextColor.GRAY)
                             .append(Component.text(" (${System.currentTimeMillis() - time}ms)", NamedTextColor.BLUE))
-                            .append(Component.text(" [steps -> $count]", NamedTextColor.GOLD))
+                            .append(Component.text(" [steps -> ${atomicInteger.get()}]", NamedTextColor.GOLD))
                     )
                 } catch (e: PolyglotException) {
                     scriptContext.player?.player?.sendMessage(Component.text("error: ${e.message}", NamedTextColor.RED))
@@ -79,7 +92,11 @@ class Script(val content: String = "") {
             }
         }
 
+        val result = ScriptResult(Instant.now(), atomicInteger, currentThread)
+
         Thread.currentThread().contextClassLoader = oldCl
+
+        ScriptManager.runningScripts[uuid] = result
     }
 
     fun runAsPlayer(player: Player) = run(ScriptContext(
