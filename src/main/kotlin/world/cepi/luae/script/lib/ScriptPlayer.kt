@@ -22,6 +22,14 @@ class ScriptPlayer(val player: Player) : ScriptEntity(player), ScriptAudience {
             player.isFlying = value
         }
 
+    @get:ScriptableExport
+    @set:ScriptableExport
+    var respawnPoint: ScriptPos
+        get() = ScriptPos.fromPosition(player.respawnPoint)
+        set(value) {
+            player.respawnPoint = value.toPosition()
+        }
+
 
     @get:ScriptableExport
     val username: String = player.username

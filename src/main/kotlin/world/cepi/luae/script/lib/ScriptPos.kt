@@ -34,4 +34,6 @@ class ScriptPos(
             )
     }
 
+    override fun toString() = "ScriptPos<$x, $y, $z, $pitch, $yaw>"
+
 }

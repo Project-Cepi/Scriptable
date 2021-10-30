@@ -25,4 +25,6 @@ class ScriptVec(
             )
     }
 
+    override fun toString() = "ScriptPos<$x, $y, $z>"
+
 }
