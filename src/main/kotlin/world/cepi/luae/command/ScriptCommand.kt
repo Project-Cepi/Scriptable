@@ -52,6 +52,10 @@ object ScriptCommand : Kommand({
     }
 
     syntax(all) {
+        sender.sendMessage(Component.text("Scripts ", NamedTextColor.GRAY)
+            .append(Component.text("(${ScriptManager.runningScripts.size}) ", NamedTextColor.BLUE))
+            .append(Component.text("-", NamedTextColor.GRAY)))
+
         ScriptManager.runningScripts.forEach {
             sender.sendMessage(
                 Component.text("Running for ", NamedTextColor.GRAY)

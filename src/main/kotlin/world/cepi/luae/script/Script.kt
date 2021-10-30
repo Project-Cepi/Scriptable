@@ -89,6 +89,7 @@ class Script(val content: String = "") {
                 }
 
                 listener.close()
+                ScriptManager.runningScripts.remove(uuid)
             }
         }
 
