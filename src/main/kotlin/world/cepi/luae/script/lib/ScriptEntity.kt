@@ -15,6 +15,9 @@ open class ScriptEntity(val entity: Entity) : ScriptTickable(entity) {
     }
 
     @get:ScriptableExport
+    val isActive get() = entity.isActive
+
+    @get:ScriptableExport
     @set:ScriptableExport
     var position
         get() = ScriptPos.fromPosition(entity.position)
@@ -22,12 +25,26 @@ open class ScriptEntity(val entity: Entity) : ScriptTickable(entity) {
             entity.teleport(value.toPosition())
         }
 
+    @ScriptableExport
+    fun hasVelocity() = entity.hasVelocity()
+
+    @ScriptableExport
+    fun hasNoGravity() = entity.hasNoGravity()
+
     @get:ScriptableExport
     @set:ScriptableExport
     var velocity
         get() = ScriptVec.fromVec(entity.velocity)
         set(value) {
             entity.velocity = value.toVec()
+        }
+
+    @get:ScriptableExport
+    @set:ScriptableExport
+    var silent
+        get() = entity.isSilent
+        set(value) {
+            entity.isSilent = true
         }
 
     @get:ScriptableExport
