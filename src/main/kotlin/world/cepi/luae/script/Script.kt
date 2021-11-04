@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.minestom.server.entity.Entity
 import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
@@ -102,7 +103,14 @@ class Script(val content: String = "") {
 
     fun runAsPlayer(player: Player) = run(ScriptContext(
         ScriptPlayer(player),
+        ScriptEntity(player),
         ScriptPos.fromPosition(player.position)
+    ))
+
+    fun runAsEntity(entity: Entity) = run(ScriptContext(
+        null,
+        ScriptEntity(entity),
+        ScriptPos.fromPosition(entity.position)
     ))
 
 

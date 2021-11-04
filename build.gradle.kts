@@ -53,6 +53,9 @@ dependencies {
     // Add Kepi
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
+    // Add actions
+    compileOnly("com.github.Project-Cepi:Actions:1b9076dc77")
+
     // Add js support
     implementation("org.graalvm.js:js:$graalVersion")
 }

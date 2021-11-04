@@ -4,7 +4,8 @@
   "version": "${project.version}",
   "dependencies": [
     "Kepi",
-    "KStom"
+    "KStom",
+    "Actions"
   ],
   "meta": {
     "downloadURL": "https://github.com/Project-Cepi/LuaecEditor/releases/download/latest/LuaeEngine-1.0.0-all.jar"
