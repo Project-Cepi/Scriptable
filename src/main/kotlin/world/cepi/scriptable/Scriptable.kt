@@ -18,6 +18,8 @@ class Scriptable : Extension() {
 
     override fun terminate() {
 
+        ActionManager.remove(ScriptAction::class)
+
         ScriptCommand.unregister()
 
         logger.info("[Scriptable] has been disabled!")
