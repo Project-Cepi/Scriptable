@@ -117,9 +117,7 @@ class Script(val content: String = "") {
     fun asItem(): ItemStack = item(Material.PAPER) {
         displayName(Component.text("Script", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))
 
-        withMeta {
-            this.setTag(Tag.String(key), content)
-        }
+        this.setTag(Tag.String(key), content)
     }
 
 
