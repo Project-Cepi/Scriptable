@@ -10,7 +10,7 @@ import world.cepi.scriptable.script.scriptString
 
 object ScriptItemOffContextParser : ContextParser<String> {
 
-    override fun or(): ArgumentString = ArgumentType.String("script")
+    override fun or(): Argument<out String> = ArgumentType.String("scriptContext")
 
     override fun parse(sender: CommandSender): String? =
         (sender as? Player)?.itemInOffHand?.scriptString
