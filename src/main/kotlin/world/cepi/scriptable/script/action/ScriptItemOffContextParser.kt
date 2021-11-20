@@ -1,5 +1,6 @@
 package world.cepi.scriptable.script.action
 
+import net.kyori.adventure.text.Component
 import net.minestom.server.command.CommandSender
 import net.minestom.server.command.builder.arguments.Argument
 import net.minestom.server.command.builder.arguments.ArgumentString
@@ -14,5 +15,7 @@ object ScriptItemOffContextParser : ContextParser<String> {
 
     override fun parse(sender: CommandSender): String? =
         (sender as? Player)?.itemInOffHand?.scriptString
+
+    override val callbackMessage = Component.text("Script not found in text nor in off hand!")
 
 }

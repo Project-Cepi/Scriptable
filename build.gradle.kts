@@ -48,7 +48,7 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
 
     // Get KStom
-    compileOnly("com.github.Project-Cepi:KStom:a2373045c4")
+    compileOnly("com.github.Project-Cepi:KStom:b20a9c0e9f")
 
     // Add Kepi
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
