@@ -4,8 +4,7 @@
   "version": "${project.version}",
   "dependencies": [
     "Kepi",
-    "KStom",
-    "Actions"
+    "KStom"
   ],
   "meta": {
     "downloadURL": "https://github.com/Project-Cepi/Scriptable/releases/download/latest/Scriptable-1.0.0-all.jar"
