@@ -14,18 +14,18 @@ class Scriptable : Extension() {
 
         logger.info("[Scriptable] has been enabled!")
     }
-
-    override fun postInitialize() {
-        if (Manager.extension.hasExtension("actions")) {
-            ActionManager.add(ScriptAction::class)
-        }
-    }
+//
+//    override fun postInitialize() {
+//        if (Manager.extension.hasExtension("actions")) {
+//            ActionManager.add(ScriptAction::class)
+//        }
+//    }
 
     override fun terminate() {
 
-        if (Manager.extension.hasExtension("actions")) {
-            ActionManager.remove(ScriptAction::class)
-        }
+//        if (Manager.extension.hasExtension("actions")) {
+//            ActionManager.remove(ScriptAction::class)
+//        }
 
         ScriptCommand.unregister()
 
