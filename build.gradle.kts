@@ -54,7 +54,7 @@ dependencies {
     compileOnly("com.github.Project-Cepi:Kepi:e124e9d1f8")
 
     // Add actions
-    compileOnly("com.github.Project-Cepi:Actions:1b9076dc77")
+    compileOnly("com.github.Project-Cepi:Actions:fcb9bf6ddc")
 
     // Add js support
     implementation("org.graalvm.js:js:$graalVersion")
@@ -93,13 +93,13 @@ tasks {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 
 val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+compileKotlin.kotlinOptions.jvmTarget = JavaVersion.VERSION_17.toString()
 
 compileKotlin.kotlinOptions {
     freeCompilerArgs = listOf("-Xinline-classes")

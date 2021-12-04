@@ -11,15 +11,10 @@ class Scriptable : Extension() {
     override fun initialize() {
 
         ScriptCommand.register()
+        ActionManager.add<ScriptAction>()
 
         logger.info("[Scriptable] has been enabled!")
     }
-//
-//    override fun postInitialize() {
-//        if (Manager.extension.hasExtension("actions")) {
-//            ActionManager.add(ScriptAction::class)
-//        }
-//    }
 
     override fun terminate() {
 

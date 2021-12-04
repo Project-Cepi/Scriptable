@@ -41,7 +41,7 @@ class Script(val content: String = "") {
      *
      * @return If this succeeded or not.
      */
-    fun run(scriptContext: ScriptContext) {
+    fun run(scriptContext: ScriptContext, debug: Boolean = true) {
 
         val oldCl = Thread.currentThread().contextClassLoader
         Thread.currentThread().contextClassLoader = javaClass.classLoader
@@ -53,7 +53,9 @@ class Script(val content: String = "") {
         val currentThread = thread {
             graalContext().use { context ->
                 context.getBindings("js").apply {
-                    putMember("context", scriptContext)
+                    putMember("player", scriptContext.player)
+                    putMember("entity", scriptContext.entity)
+                    putMember("position", scriptContext.position)
                     putMember("Pos", ScriptPos)
                     putMember("Vec", ScriptVec)
                     putMember("Audiences", ScriptAudiences)
@@ -67,9 +69,10 @@ class Script(val content: String = "") {
                         val currentAmount = atomicInteger.addAndGet(1)
 
                         if (currentAmount > 10_000) {
-                            scriptContext.player?.player?.sendMessage(
-                                Component.text("Script over 10,000 steps. Stopping", NamedTextColor.RED)
-                            )
+                            if (debug)
+                                scriptContext.player?.player?.sendMessage(
+                                    Component.text("Script over 10,000 steps. Stopping", NamedTextColor.RED)
+                                )
                             ScriptManager.interrupt(uuid)
                         }
                     }
@@ -80,13 +83,15 @@ class Script(val content: String = "") {
 
                 try {
                     val returnValue = context.eval("js", content)
-                    scriptContext.player?.player?.sendMessage(
-                        Component.text(returnValue.toString(), NamedTextColor.GRAY)
-                            .append(Component.text(" (${System.currentTimeMillis() - time}ms)", NamedTextColor.BLUE))
-                            .append(Component.text(" [steps -> ${atomicInteger.get()}]", NamedTextColor.GOLD))
-                    )
+                    if (debug)
+                        scriptContext.player?.player?.sendMessage(
+                            Component.text(returnValue.toString(), NamedTextColor.GRAY)
+                                .append(Component.text(" (${System.currentTimeMillis() - time}ms)", NamedTextColor.BLUE))
+                                .append(Component.text(" [steps -> ${atomicInteger.get()}]", NamedTextColor.GOLD))
+                        )
                 } catch (e: PolyglotException) {
-                    scriptContext.player?.player?.sendMessage(Component.text("error: ${e.message}", NamedTextColor.RED))
+                    if (debug)
+                        scriptContext.player?.player?.sendMessage(Component.text("error: ${e.message}", NamedTextColor.RED))
                 }
 
                 listener.close()
@@ -101,17 +106,19 @@ class Script(val content: String = "") {
         ScriptManager.runningScripts[uuid] = result
     }
 
-    fun runAsPlayer(player: Player) = run(ScriptContext(
+    fun runAsPlayer(player: Player, debug: Boolean = true) = run(ScriptContext(
         ScriptPlayer(player),
         ScriptEntity(player),
-        ScriptPos.fromPosition(player.position)
-    ))
+        ScriptPos.fromPosition(player.position),
+        player.instance?.let { ScriptInstance(it) }
+    ), debug)
 
-    fun runAsEntity(entity: Entity) = run(ScriptContext(
+    fun runAsEntity(entity: Entity, debug: Boolean = true) = run(ScriptContext(
         null,
         ScriptEntity(entity),
-        ScriptPos.fromPosition(entity.position)
-    ))
+        ScriptPos.fromPosition(entity.position),
+        entity.instance?.let { ScriptInstance(it) }
+    ), debug)
 
 
     fun asItem(): ItemStack = item(Material.PAPER) {

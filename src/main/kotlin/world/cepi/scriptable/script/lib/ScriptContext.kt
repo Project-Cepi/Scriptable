@@ -10,8 +10,10 @@ data class ScriptContext(
     @get:ScriptableExport
     val player: ScriptPlayer?,
     @get:ScriptableExport
-    val entity: ScriptEntity,
+    val entity: ScriptEntity?,
     /** Where it was executed */
     @get:ScriptableExport
-    val position: ScriptPos?
+    val position: ScriptPos?,
+    @get:ScriptableExport
+    val instance: ScriptInstance?
 )
