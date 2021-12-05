@@ -12,7 +12,7 @@ A session
 
 ## Installation
 
-Download the jar from [Releases](https://github.com/Project-Cepi/LuaecEditor/releases)
+Download the jar from [Releases](https://github.com/Project-Cepi/Scriptable/releases)
 OR compile it yourself. Instructions to do so are in Compile header
 
 Drop it into the `/extensions` folder.
