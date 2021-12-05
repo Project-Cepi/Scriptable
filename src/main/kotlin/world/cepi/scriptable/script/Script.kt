@@ -29,6 +29,8 @@ class Script(val content: String = "") {
 
     companion object {
         const val key = "luae-script"
+
+        val objects = mutableMapOf<String, Any>()
     }
 
     fun graalContext() = Context.newBuilder("js")
@@ -62,6 +64,7 @@ class Script(val content: String = "") {
                     putMember("Chance", ScriptChance) // Chance.chance
                     putMember("Timer", ScriptTimer) // Timer.sleep
                     putMember("Executor", ScriptExecutor(scriptContext)) // Executor.execute
+                    objects.forEach { (key, value) -> putMember(key, value) }
                 }
 
                 val listener = ExecutionListener.newBuilder()
