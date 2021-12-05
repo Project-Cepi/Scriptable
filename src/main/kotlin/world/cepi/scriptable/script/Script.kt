@@ -117,7 +117,7 @@ class Script(val content: String = "") {
     ), debug)
 
     fun runAsEntity(entity: Entity, debug: Boolean = true) = run(ScriptContext(
-        null,
+        (entity as? Player)?.let { ScriptPlayer(it) },
         ScriptEntity(entity),
         ScriptPos.fromPosition(entity.position),
         entity.instance?.let { ScriptInstance(it) }
