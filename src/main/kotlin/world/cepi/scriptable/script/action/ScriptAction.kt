@@ -3,6 +3,7 @@ package world.cepi.scriptable.script.action
 import kotlinx.serialization.Serializable
 import net.minestom.server.entity.Entity
 import world.cepi.actions.Action
+import world.cepi.kstom.command.arguments.generation.annotations.CustomArgument
 import world.cepi.kstom.command.arguments.generation.annotations.DefaultBoolean
 import world.cepi.kstom.command.arguments.generation.annotations.ParameterContext
 import world.cepi.scriptable.script.Script
@@ -11,6 +12,7 @@ import world.cepi.scriptable.script.Script
 class ScriptAction(
     @DefaultBoolean(true)
     val debug: Boolean = true,
+    @CustomArgument(ScriptItemOffContextParser::class)
     val script: String
 ) : Action() {
 
