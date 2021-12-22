@@ -12,7 +12,6 @@ import world.cepi.scriptable.script.Script
 class ScriptAction(
     @DefaultBoolean(true)
     val debug: Boolean = true,
-    @CustomArgument(ScriptItemOffContextParser::class)
     val script: String
 ) : Action() {
 
