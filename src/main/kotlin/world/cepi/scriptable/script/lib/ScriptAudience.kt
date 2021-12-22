@@ -13,6 +13,12 @@ interface ScriptAudience {
     fun sendMessage(message: String) = audience.sendMessage(message.asMini())
 
     @ScriptableExport
+    fun sendMessage(int: Int) = sendMessage(int.toString())
+
+    @ScriptableExport
+    fun sendMessage(double: Double) = sendMessage(double.toString())
+
+    @ScriptableExport
     fun sendMessage(message: ScriptComponent) = audience.sendMessage(message.component)
 
     @ScriptableExport
