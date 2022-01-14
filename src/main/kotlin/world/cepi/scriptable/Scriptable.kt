@@ -3,17 +3,20 @@ package world.cepi.scriptable
 import net.minestom.server.extensions.Extension;
 import world.cepi.actions.list.ActionManager
 import world.cepi.kstom.Manager
+import world.cepi.kstom.util.log
 import world.cepi.scriptable.command.ScriptCommand
 import world.cepi.scriptable.script.action.ScriptAction
 
 class Scriptable : Extension() {
 
-    override fun initialize() {
+    override fun initialize(): LoadStatus {
 
         ScriptCommand.register()
         ActionManager.add<ScriptAction>()
 
-        logger.info("[Scriptable] has been enabled!")
+        log.info("[Scriptable] has been enabled!")
+
+        return LoadStatus.SUCCESS
     }
 
     override fun terminate() {
@@ -24,7 +27,7 @@ class Scriptable : Extension() {
 
         ScriptCommand.unregister()
 
-        logger.info("[Scriptable] has been disabled!")
+        log.info("[Scriptable] has been disabled!")
     }
 
 }

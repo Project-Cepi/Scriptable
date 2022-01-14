@@ -12,11 +12,12 @@ import world.cepi.scriptable.script.Script
 class ScriptAction(
     @DefaultBoolean(true)
     val debug: Boolean = true,
-    val script: String
+    @ParameterContext(ScriptItemOffContextParser::class)
+    val script: Script
 ) : Action() {
 
     override fun invoke(source: Entity, target: Entity?) {
-        Script(script).runAsEntity(source, debug)
+        script.runAsEntity(source, debug)
     }
 
 }
