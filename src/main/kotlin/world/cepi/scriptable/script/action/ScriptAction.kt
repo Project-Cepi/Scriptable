@@ -10,7 +10,6 @@ import world.cepi.scriptable.script.Script
 
 @Serializable
 class ScriptAction(
-    @DefaultBoolean(true)
     val debug: Boolean = true,
     @ParameterContext(ScriptItemOffContextParser::class)
     val script: Script
