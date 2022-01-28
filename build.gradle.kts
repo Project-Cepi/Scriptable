@@ -29,7 +29,7 @@ repositories {
     maven(url = "https://repo.velocitypowered.com/snapshots/")
 }
 
-val graalVersion = "21.3.0"
+val graalVersion = "22.0.0.2"
 
 dependencies {
     // Align versions of all Kotlin components
