@@ -17,7 +17,7 @@ object ScriptCommand : Kommand({
 
     val create by literal
     val run by literal
-    val list by literal
+    val content by literal
     val quick by literal
     val all by literal
     val interrupt by literal
@@ -28,7 +28,7 @@ object ScriptCommand : Kommand({
         it.joinToString(" ")
     }
 
-    syntax(list) {
+    syntax(content) {
         val script = player.itemInMainHand.scriptString ?: return@syntax
 
         script.split("\n").forEach {
@@ -43,15 +43,15 @@ object ScriptCommand : Kommand({
     syntax(run) {
         val script = player.itemInMainHand.scriptString ?: return@syntax
 
-        Script(script).runAsPlayer(player)
+        Script(script).runAsPlayer(player, debug = true)
     }
 
     syntax(quick, quickContent) {
-        Script(!quickContent).runAsPlayer(player)
+        Script(!quickContent).runAsPlayer(player, debug = true)
     }
 
     syntax(all) {
-        sender.sendMessage(Component.text("Scripts ", NamedTextColor.GRAY)
+        sender.sendMessage(Component.text("Running Scripts ", NamedTextColor.GRAY)
             .append(Component.text("(${ScriptManager.runningScripts.size}) ", NamedTextColor.BLUE))
             .append(Component.text("-", NamedTextColor.GRAY)))
 

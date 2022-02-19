@@ -15,11 +15,12 @@ import world.cepi.kstom.command.arguments.generation.annotations.DefaultBoolean
 import world.cepi.kstom.command.arguments.generation.annotations.ParameterContext
 import world.cepi.kstom.command.kommand.Kommand
 import world.cepi.scriptable.script.Script
+import world.cepi.scriptable.script.lib.ScriptEntity
 import world.cepi.scriptable.script.scriptString
 
 @Serializable
 class ScriptAction(
-    val debug: Boolean = true,
+    val debug: Boolean = false,
     val script: Script
 ) : Action() {
 
@@ -33,7 +34,7 @@ class ScriptAction(
     }
 
     override fun invoke(source: Entity, target: Entity?) {
-        script.runAsEntity(source, debug)
+        script.runAsEntity(source, target?.let { mapOf("target" to ScriptEntity(it)) } ?: emptyMap(), debug)
     }
 
 }

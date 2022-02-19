@@ -16,6 +16,16 @@ object ScriptAudiences {
     }
 
     @ScriptableExport
+    fun near(instance: ScriptInstance, position: ScriptPoint, distance: Double) = object : ScriptAudience {
+        override val audience =  Audiences.players { it.instance == instance.instance && it.position.distance(position.toVec()) <= distance }
+    }
+
+    @ScriptableExport
+    fun near(entity: ScriptEntity, distance: Double) = object : ScriptAudience {
+        override val audience =  Audiences.players { it.instance == entity.instance?.instance && it.position.distance(entity.position.toVec()) <= distance }
+    }
+
+    @ScriptableExport
     fun console() = object : ScriptAudience {
         override val audience = Audiences.console()
     }

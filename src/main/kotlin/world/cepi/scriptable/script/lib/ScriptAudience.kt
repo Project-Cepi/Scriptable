@@ -13,6 +13,9 @@ interface ScriptAudience {
     fun sendMessage(message: String) = audience.sendMessage(message.asMini())
 
     @ScriptableExport
+    fun sendRandomMessage(messages: List<String>) = sendMessage(messages.random())
+
+    @ScriptableExport
     fun sendMessage(int: Int) = sendMessage(int.toString())
 
     @ScriptableExport

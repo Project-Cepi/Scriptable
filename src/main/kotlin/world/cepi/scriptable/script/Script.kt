@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.minestom.server.adventure.audience.Audiences
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack
@@ -14,6 +15,7 @@ import org.graalvm.polyglot.PolyglotException
 import org.graalvm.polyglot.management.ExecutionListener
 import world.cepi.kstom.item.item
 import world.cepi.kstom.item.withMeta
+import world.cepi.kstom.util.sendMessage
 import world.cepi.scriptable.script.access.ScriptableExplicitConfig
 import world.cepi.scriptable.script.lib.*
 import java.time.Instant
@@ -43,7 +45,7 @@ class Script(val content: String = "") {
      *
      * @return If this succeeded or not.
      */
-    fun run(scriptContext: ScriptContext, debug: Boolean = true) {
+    fun run(scriptContext: ScriptContext, localObjects: Map<String, Any> = emptyMap(), debug: Boolean = true) {
 
         val oldCl = Thread.currentThread().contextClassLoader
         Thread.currentThread().contextClassLoader = javaClass.classLoader
@@ -65,6 +67,7 @@ class Script(val content: String = "") {
                     putMember("Timer", ScriptTimer) // Timer.sleep
                     putMember("Executor", ScriptExecutor(scriptContext)) // Executor.execute
                     objects.forEach { (key, value) -> putMember(key, value) }
+                    localObjects.forEach { (key, value) -> putMember(key, value) }
                 }
 
                 val listener = ExecutionListener.newBuilder()
@@ -109,19 +112,19 @@ class Script(val content: String = "") {
         ScriptManager.runningScripts[uuid] = result
     }
 
-    fun runAsPlayer(player: Player, debug: Boolean = true) = run(ScriptContext(
+    fun runAsPlayer(player: Player, localObjects: Map<String, Any> = emptyMap(), debug: Boolean = false) = run(ScriptContext(
         ScriptPlayer(player),
         ScriptEntity(player),
         ScriptPos.fromPosition(player.position),
         player.instance?.let { ScriptInstance(it) }
-    ), debug)
+    ), localObjects, debug)
 
-    fun runAsEntity(entity: Entity, debug: Boolean = true) = run(ScriptContext(
+    fun runAsEntity(entity: Entity, localObjects: Map<String, Any> = emptyMap(), debug: Boolean = false) = run(ScriptContext(
         (entity as? Player)?.let { ScriptPlayer(it) },
         ScriptEntity(entity),
         ScriptPos.fromPosition(entity.position),
         entity.instance?.let { ScriptInstance(it) }
-    ), debug)
+    ), localObjects, debug)
 
 
     fun asItem(): ItemStack = item(Material.PAPER) {
