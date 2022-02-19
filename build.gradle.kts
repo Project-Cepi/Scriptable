@@ -5,7 +5,7 @@ plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.6.0"
     // Kotlinx serialization for any data format
-    kotlin("plugin.serialization") version "1.6.0"
+    kotlin("plugin.serialization") version "1.6.10"
     // Shade the plugin
     id("com.github.johnrengelman.shadow") version "7.0.0"
     // Allow publishing
@@ -14,7 +14,7 @@ plugins {
     // Apply the application plugin to add support for building a jar
     java
     // Dokka documentation w/ kotlin
-    id("org.jetbrains.dokka") version "1.6.0"
+    id("org.jetbrains.dokka") version "1.6.10"
 }
 
 repositories {
@@ -29,7 +29,7 @@ repositories {
     maven(url = "https://repo.velocitypowered.com/snapshots/")
 }
 
-val graalVersion = "21.3.0"
+val graalVersion = "22.0.0.2"
 
 dependencies {
     // Align versions of all Kotlin components
@@ -45,7 +45,7 @@ dependencies {
     compileOnly("com.github.Minestom:Minestom:4ee5cbe424")
 
     // import kotlinx serialization
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     // Get KStom
     compileOnly("com.github.Project-Cepi:KStom:f97d90d959")
